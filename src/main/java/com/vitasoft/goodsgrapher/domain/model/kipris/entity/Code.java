@@ -6,15 +6,13 @@ import javax.persistence.Id;
 import javax.persistence.IdClass;
 import javax.persistence.Table;
 
-import lombok.Getter;
+import lombok.Data;
 import lombok.RequiredArgsConstructor;
-import lombok.Setter;
 import org.hibernate.annotations.DynamicUpdate;
 
 @Entity
 @Table(name = "com_code")
-@Getter
-@Setter
+@Data
 @DynamicUpdate
 @RequiredArgsConstructor
 @IdClass(CodePK.class)

@@ -11,14 +11,12 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Table;
 
-import lombok.Getter;
+import lombok.Data;
 import lombok.RequiredArgsConstructor;
-import lombok.Setter;
 
 @Entity
 @Table(name = "com_article")
-@Getter
-@Setter
+@Data
 @RequiredArgsConstructor
 public class Article {
     @Id

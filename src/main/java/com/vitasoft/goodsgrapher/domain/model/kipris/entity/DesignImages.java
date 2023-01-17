@@ -1,7 +1,6 @@
 package com.vitasoft.goodsgrapher.domain.model.kipris.entity;
 
 import java.time.LocalDateTime;
-import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -13,31 +12,26 @@ import lombok.RequiredArgsConstructor;
 import org.hibernate.annotations.DynamicUpdate;
 
 @Entity
-@Table(name = "com_adjustment")
+@Table(name = "design_images")
 @Data
 @DynamicUpdate
 @RequiredArgsConstructor
-public class Adjustment {
+public class DesignImages {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private int adjustNo;
+    private int designImgSeq;
 
-    private int metaSeq;
+    private int designSeq;
 
-    private String adjustId;
+    private String imageName;
 
-    private String regId;
+    private String imgUrl;
 
-    private String regName;
+    private String imgPath;
 
-    private LocalDateTime regDate;
+    private int imgNumber;
 
-    private char userGrade;
+    private String updId;
 
-    private char adjustYn;
-
-    private int passCount;
-
-    @Column(name = "SUBSCRIPTION")
-    private String subScription;
+    private LocalDateTime updDate;
 }
