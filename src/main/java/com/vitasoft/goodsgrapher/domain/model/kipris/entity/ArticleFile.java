@@ -7,15 +7,13 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Table;
 
-import lombok.Getter;
+import lombok.Data;
 import lombok.RequiredArgsConstructor;
-import lombok.Setter;
 import org.hibernate.annotations.DynamicUpdate;
 
 @Entity
 @Table(name = "com_article_file")
-@Getter
-@Setter
+@Data
 @DynamicUpdate
 @RequiredArgsConstructor
 public class ArticleFile {

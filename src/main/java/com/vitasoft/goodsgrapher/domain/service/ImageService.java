@@ -4,7 +4,7 @@ import com.vitasoft.goodsgrapher.domain.exception.image.CannotUploadImageExcepti
 import com.vitasoft.goodsgrapher.domain.exception.image.CannotViewImageException;
 import com.vitasoft.goodsgrapher.domain.exception.image.ImageNotFoundException;
 import com.vitasoft.goodsgrapher.domain.model.kipris.entity.ArticleFile;
-import com.vitasoft.goodsgrapher.domain.model.kipris.entity.Metadata;
+import com.vitasoft.goodsgrapher.domain.model.kipris.entity.ModelInfo;
 import com.vitasoft.goodsgrapher.domain.model.kipris.repository.ArticleFileRepository;
 
 import java.io.ByteArrayOutputStream;
@@ -35,26 +35,26 @@ public class ImageService {
 
     private final ArticleFileRepository articleFileRepository;
 
-    public ArticleFile uploadMetadataImage(String memberId, Metadata metadata, MultipartFile file, int displayOrder) {
-        try {
-            String fileType = "." + FilenameUtils.getExtension(file.getOriginalFilename());
-            String fileSize = String.valueOf(file.getSize());
-            String fileName = formatFileName(memberId, metadata, displayOrder, fileType);
-            uploadImage(inspectPath, file, fileName);
-            return new ArticleFile(metadata.getMetaSeq(), fileName.substring(fileName.lastIndexOf("/") + 1), fileName, fileSize, fileType, memberId, displayOrder);
-        } catch (IOException e) {
-            throw new CannotUploadImageException();
-        }
-    }
+//    public ArticleFile uploadMetadataImage(String memberId, ModelInfo metadata, MultipartFile file, int displayOrder) {
+//        try {
+//            String fileType = "." + FilenameUtils.getExtension(file.getOriginalFilename());
+//            String fileSize = String.valueOf(file.getSize());
+//            String fileName = formatFileName(memberId, metadata, displayOrder, fileType);
+//            uploadImage(inspectPath, file, fileName);
+//            return new ArticleFile(metadata.getMetaSeq(), fileName.substring(fileName.lastIndexOf("/") + 1), fileName, fileSize, fileType, memberId, displayOrder);
+//        } catch (IOException e) {
+//            throw new CannotUploadImageException();
+//        }
+//    }
 
-    private String formatFileName(String memberId, Metadata metadata, int displayOrder, String fileType) {
-        String formatMetaSeq = String.format("%06d", metadata.getMetaSeq());
-
-        String[] folderNameParts = {memberId, formatLastRightHolderName(metadata.getLastRightHolderName()), metadata.getArticleName(), metadata.getModelName(), metadata.getRegistrationNumber().replaceAll("/", ""), metadata.getDsshpclsscd().contains("|") ? metadata.getDsshpclsscd().split("\\|")[0] : metadata.getDsshpclsscd()};
-        String folderName = metadata.getDsshpclsscd().contains("|") ? metadata.getDsshpclsscd().split("\\|")[0] + "/" + String.join("_", folderNameParts) : metadata.getDsshpclsscd() + "/" + String.join("_", folderNameParts);
-        String fileName = "/VS_2022_" + formatMetaSeq + "_0_-1_" + (displayOrder + 1) + fileType;
-        return folderName + fileName;
-    }
+//    private String formatFileName(String memberId, ModelInfo metadata, int displayOrder, String fileType) {
+//        String formatMetaSeq = String.format("%06d", metadata.getMetaSeq());
+//
+//        String[] folderNameParts = {memberId, formatLastRightHolderName(metadata.getLastRightHolderName()), metadata.getArticleName(), metadata.getModelName(), metadata.getRegistrationNumber().replaceAll("/", ""), metadata.getDsshpclsscd().contains("|") ? metadata.getDsshpclsscd().split("\\|")[0] : metadata.getDsshpclsscd()};
+//        String folderName = metadata.getDsshpclsscd().contains("|") ? metadata.getDsshpclsscd().split("\\|")[0] + "/" + String.join("_", folderNameParts) : metadata.getDsshpclsscd() + "/" + String.join("_", folderNameParts);
+//        String fileName = "/VS_2022_" + formatMetaSeq + "_0_-1_" + (displayOrder + 1) + fileType;
+//        return folderName + fileName;
+//    }
 
     private String formatLastRightHolderName(String lastRightHolderName) {
         String[] brandNameList = {"애드크런치", "세라젬", "다이슨", "에이치피", "라네즈", "엘지전자", "현대모비스", "미쟝센", "슈피겐", "설화수", "삼성전자", "쓰리쎄븐"};

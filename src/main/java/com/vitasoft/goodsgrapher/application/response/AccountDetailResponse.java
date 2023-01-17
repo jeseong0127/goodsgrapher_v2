@@ -1,7 +1,7 @@
 package com.vitasoft.goodsgrapher.application.response;
 
 import com.vitasoft.goodsgrapher.domain.model.kipris.entity.ArticleFile;
-import com.vitasoft.goodsgrapher.domain.model.kipris.entity.Metadata;
+import com.vitasoft.goodsgrapher.domain.model.kipris.entity.ModelInfo;
 
 import java.util.List;
 
@@ -11,7 +11,7 @@ import lombok.Getter;
 @AllArgsConstructor
 @Getter
 public class AccountDetailResponse {
-    Metadata metadata;
+    ModelInfo metadata;
 
     List<ArticleFile> articleFiles;
 }
