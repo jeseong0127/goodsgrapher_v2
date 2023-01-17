@@ -1,0 +1,69 @@
+server:
+  port: ${APPLICATION_PORT}
+  servlet:
+    encoding:
+      charset: UTF-8
+      enabled: true
+      force: true
+
+spring:
+  jpa:
+    database: mysql
+#    database-platform: org.hibernate.dialect.MariaDB103Dialect
+    database-platform: org.hibernate.dialect.MySQL57InnoDBDialect
+    generate-ddl: false
+    hibernate:
+      ddl-auto: none
+    show-sql: false
+    properties:
+      hibernate:
+        format_sql: true
+    open-in-view: true
+
+  servlet:
+    multipart:
+      max-file-size: 30MB
+      max-request-size: 80MB
+
+  mvc:
+    pathmatch:
+      matching-strategy: ant_path_matcher
+
+  security:
+    user:
+      password: vitasoft001
+
+kipris:
+  datasource:
+#    driver-class-name: org.mariadb.jdbc.Driver
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: ${DATABASE_URL}
+    username: ${DATABASE_USERNAME}
+    password: ${DATABASE_PASSWORD}
+
+sso:
+  datasource:
+#    driver-class-name: org.mariadb.jdbc.Driver
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: ${DATABASE_URL2}
+    username: ${DATABASE_USERNAME2}
+    password: ${DATABASE_PASSWORD2}
+
+app:
+  jwtSecret: ${APP_JWT_SECRET}
+  jwtExpirationMs: ${APP_JWT_EXPIRATION_MS}
+
+image:
+  upload-path:
+    metadata: ${METADATA_UPLOAD_PATH}
+    inspect: ${INSPECT_UPLOAD_PATH}
+    fail: ${FAIL_UPLOAD_PATH}
+
+logging:
+  level:
+    org:
+      hibernate:
+        type:
+          descriptor:
+            sql:
+              BasicBinder: off
