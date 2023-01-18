@@ -1,13 +1,18 @@
 package com.vitasoft.goodsgrapher.application.controller;
 
 import com.vitasoft.goodsgrapher.application.response.CategoryResponse;
+import com.vitasoft.goodsgrapher.application.response.MetadataResponse;
+import com.vitasoft.goodsgrapher.domain.service.MetadataService;
 import io.swagger.annotations.ApiOperation;
+
+import java.util.List;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -15,24 +20,24 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("/api/metadata")
 @RequiredArgsConstructor
 public class MetadataController {
-//    private final MetadataService metadataService;
-//
-//    @ApiOperation("메타데이터 조회하기")
-//    @GetMapping
-//    @ResponseStatus(HttpStatus.OK)
-//    public MetadataResponse getMetadata(
-//            @RequestParam(required = false) String word,
-//            @RequestParam(required = false) List<String> images,
-//            @RequestParam(required = false) String codeId
-//    ) {
-//        if (word != null || codeId != null) {
-//            return new MetadataResponse(metadataService.getSearchMetadata(word, codeId));
-//        } else if (images != null) {
-//            return new MetadataResponse(metadataService.getImageSearchMetadata(images));
-//        } else {
-//            return new MetadataResponse(metadataService.getMetadataList());
-//        }
-//    }
+    private final MetadataService metadataService;
+
+    @ApiOperation("메타데이터 조회하기")
+    @GetMapping
+    @ResponseStatus(HttpStatus.OK)
+    public MetadataResponse getMetadata(
+            @RequestParam(required = false) String word,
+            @RequestParam(required = false) List<String> images,
+            @RequestParam(required = false) String codeId
+    ) {
+        if (word != null || codeId != null) {
+            return new MetadataResponse(metadataService.getSearchMetadata(word, codeId));
+        } else if (images != null) {
+            return new MetadataResponse(metadataService.getImageSearchMetadata(images));
+        } else {
+            return new MetadataResponse(metadataService.getMetadataList());
+        }
+    }
 
 //    @ApiOperation("메타데이터 예약하기")
 //    @PostMapping("/reservation/{metaSeq}")
