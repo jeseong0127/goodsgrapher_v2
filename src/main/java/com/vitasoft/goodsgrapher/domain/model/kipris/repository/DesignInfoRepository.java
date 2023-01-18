@@ -7,4 +7,5 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public interface DesignInfoRepository extends JpaRepository<DesignInfo, Integer> {
+    DesignInfo findByRegistrationNumber(String registrationNumber);
 }

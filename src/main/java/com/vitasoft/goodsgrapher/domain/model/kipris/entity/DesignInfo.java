@@ -1,12 +1,10 @@
 package com.vitasoft.goodsgrapher.domain.model.kipris.entity;
 
-import java.util.List;
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.OneToMany;
-import javax.persistence.OneToOne;
 import javax.persistence.Table;
 
 import lombok.Data;
@@ -14,7 +12,7 @@ import lombok.RequiredArgsConstructor;
 import org.hibernate.annotations.DynamicUpdate;
 
 @Entity
-@Table(name = "meta_design_Info")
+@Table(name = "meta_design_info")
 @Data
 @DynamicUpdate
 @RequiredArgsConstructor
@@ -23,39 +21,30 @@ public class DesignInfo {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int designSeq;
 
-    @OneToOne
-    private ModelInfo modelInfo;
-
-    @OneToMany
-    private List<DesignImages> designImages;
-
     private String registrationNumber;
 
     private String designNumber;
 
     private String applicationNumber;
 
-    private String dsScgrtDmndYn;
+    private String openDesignStatus;
 
-    private String kpsArticleName;
+    private String articleName;
 
-    private String kpsCompanyName;
+    private String companyName;
 
+    @Column(name = "LASTRIGHT_HOLDERNAME")
     private String lastRightHolderName;
 
-    private String rightCode;
-
-    private String kpsImgUrl;
+    private String imgUrl;
 
     private String imgPath;
 
-    private String kpsPdfUrl;
+    private String pdfUrl;
 
     private String pdfPath;
 
-    private String pathImgGoods;
-
-    private String dsshpclsscd;
+    private String classCode;
 
     private String agentName;
 

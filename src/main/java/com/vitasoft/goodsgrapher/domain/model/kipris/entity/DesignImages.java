@@ -5,6 +5,8 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
 import lombok.Data;
@@ -12,7 +14,7 @@ import lombok.RequiredArgsConstructor;
 import org.hibernate.annotations.DynamicUpdate;
 
 @Entity
-@Table(name = "design_images")
+@Table(name = "meta_design_images")
 @Data
 @DynamicUpdate
 @RequiredArgsConstructor
@@ -21,7 +23,9 @@ public class DesignImages {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int designImgSeq;
 
-    private int designSeq;
+    @ManyToOne
+    @JoinColumn(name = "DESIGN_SEQ")
+    private DesignInfo designInfo;
 
     private String imageName;
 

@@ -12,7 +12,7 @@ import lombok.RequiredArgsConstructor;
 import org.hibernate.annotations.DynamicUpdate;
 
 @Entity
-@Table(name = "model_images")
+@Table(name = "meta_model_images")
 @Data
 @DynamicUpdate
 @RequiredArgsConstructor
