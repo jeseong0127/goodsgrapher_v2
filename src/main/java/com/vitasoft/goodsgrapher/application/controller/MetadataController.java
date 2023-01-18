@@ -118,20 +118,20 @@ public class MetadataController {
 //        metadataService.deleteMetadata(member.getMemberId(), deleteMetadataRequest);
 //    }
 
-//    @ApiOperation("상위 카테고리 가져오기")
-//    @GetMapping("/high-category")
-//    @ResponseStatus(HttpStatus.OK)
-//    public CategoryResponse getHighCategory(
-//    ) {
-//        return new CategoryResponse(metadataService.getHighCategory());
-//    }
+    @ApiOperation("상위 카테고리 가져오기")
+    @GetMapping("/high-category")
+    @ResponseStatus(HttpStatus.OK)
+    public CategoryResponse getHighCategory(
+    ) {
+        return new CategoryResponse(metadataService.getHighCategory());
+    }
 
-//    @ApiOperation("하위 카테고리 가져오기")
-//    @GetMapping("/high-category/{codeId}")
-//    @ResponseStatus(HttpStatus.OK)
-//    public CategoryResponse getDownCategory(
-//            @PathVariable String codeId
-//    ) {
-//        return new CategoryResponse(metadataService.getDownCategory(codeId));
-//    }
+    @ApiOperation("하위 카테고리 가져오기")
+    @GetMapping("/high-category/{codeId}")
+    @ResponseStatus(HttpStatus.OK)
+    public CategoryResponse getDownCategory(
+            @PathVariable String codeId
+    ) {
+        return new CategoryResponse(metadataService.getDownCategory(codeId));
+    }
 }
