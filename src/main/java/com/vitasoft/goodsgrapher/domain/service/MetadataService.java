@@ -1,10 +1,14 @@
 package com.vitasoft.goodsgrapher.domain.service;
 
 import com.vitasoft.goodsgrapher.domain.model.dto.GetCategoryDto;
+import com.vitasoft.goodsgrapher.domain.model.dto.GetMetadataDto;
+import com.vitasoft.goodsgrapher.domain.model.kipris.entity.ModelInfo;
 import com.vitasoft.goodsgrapher.domain.model.kipris.repository.ArticleFileRepository;
 import com.vitasoft.goodsgrapher.domain.model.kipris.repository.CodeRepository;
 import com.vitasoft.goodsgrapher.domain.model.kipris.repository.DesignImagesRepository;
+import com.vitasoft.goodsgrapher.domain.model.kipris.repository.ModelInfoRepository;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -21,40 +25,40 @@ public class MetadataService {
 
     private final ArticleFileRepository articleFileRepository;
 
-//    private final ModelRepository modelRepository;
+    private final ModelInfoRepository modelInfoRepository;
 
     private final CodeRepository codeRepository;
 
     private final DesignImagesRepository designImagesRepository;
 
-//    public List<GetMetadataDto> getMetadataList() {
-//        return modelRepository.findAll().stream()
-//                .map(GetMetadataDto::new)
-//                .collect(Collectors.toList());
-//    }
+    public List<GetMetadataDto> getMetadataList() {
+        return modelInfoRepository.findAll().stream()
+                .map(GetMetadataDto::new)
+                .collect(Collectors.toList());
+    }
 
-//    public List<GetMetadataDto> getSearchMetadata(String searchWord, String codeId) {
-//        return modelRepository.findAllByMetadata(codeId, searchWord == null ? "" : searchWord, searchWord, searchWord).stream()
-//                .map(GetMetadataDto::new)
-//                .collect(Collectors.toList());
-//    }
+    public List<GetMetadataDto> getSearchMetadata(String searchWord, String codeId) {
+        return modelInfoRepository.findAllByMetadata(codeId, searchWord == null ? "" : searchWord, searchWord, searchWord).stream()
+                .map(GetMetadataDto::new)
+                .collect(Collectors.toList());
+    }
 
-//    public List<GetMetadataDto> getImageSearchMetadata(List<String> images) {
-//        List<GetMetadataDto> metadataDtos = new ArrayList<>();
-//
-//        List<ModelInfo> metadataList = modelRepository.findAllByModelNameIsNotNullAndUseYn('Y');
-//
-//        for (String pathImage : images) {
-//            metadataList.forEach(metadata -> {
-//                if (metadata.getPathImgGoods() != null && metadata.getPathImgGoods().contains(pathImage)) {
-//                    metadataDtos.add(new GetMetadataDto(metadata, "photo"));
-//                } else if (metadata.getDesignInfo().getImgPath() != null && metadata.getDesignInfo().getImgPath().contains(pathImage)) {
-//                    metadataDtos.add(new GetMetadataDto(metadata, "drawing"));
-//                }
-//            });
-//        }
-//        return metadataDtos;
-//    }
+    public List<GetMetadataDto> getImageSearchMetadata(List<String> images) {
+        List<GetMetadataDto> metadataDtos = new ArrayList<>();
+
+        List<ModelInfo> modelInfoList = modelInfoRepository.findAllByModelNameIsNotNullAndUseYn('Y');
+
+        for (String pathImage : images) {
+            modelInfoList.forEach(modelInfo -> {
+                if (modelInfo.getPathImgGoods() != null && modelInfo.getPathImgGoods().contains(pathImage)) {
+                    metadataDtos.add(new GetMetadataDto(modelInfo, "photo"));
+                } else if (modelInfo.getDesignInfo().getImgPath() != null && modelInfo.getDesignInfo().getImgPath().contains(pathImage)) {
+                    metadataDtos.add(new GetMetadataDto(modelInfo, "drawing"));
+                }
+            });
+        }
+        return metadataDtos;
+    }
 
 //    public void cancelExcessReserveTime() {
 //        LocalDateTime now = LocalDateTime.now();
