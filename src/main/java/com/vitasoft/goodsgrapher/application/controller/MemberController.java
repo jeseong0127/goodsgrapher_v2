@@ -23,14 +23,14 @@ public class MemberController {
 
     private final MemberService memberService;
 
-    @ApiOperation("내 작업 리스트 가져오기")
-    @GetMapping("/metadata")
-    @ResponseStatus(HttpStatus.OK)
-    public MetadataResponse getMetadata(
-            @MemberInfo AuthenticatedMember member
-    ) {
-        return new MetadataResponse(memberService.getMetadata(member.getMemberId()));
-    }
+//    @ApiOperation("내 작업 리스트 가져오기")
+//    @GetMapping("/metadata")
+//    @ResponseStatus(HttpStatus.OK)
+//    public MetadataResponse getMetadata(
+//            @MemberInfo AuthenticatedMember member
+//    ) {
+//        return new MetadataResponse(memberService.getMetadata(member.getMemberId()));
+//    }
 
     @ApiOperation("내 정산목록 가져오기")
     @GetMapping("/accounts")
@@ -41,13 +41,13 @@ public class MemberController {
         return new AccountsResponse(memberService.getAccounts(member.getMemberId()));
     }
 
-    @ApiOperation("내 정산목록의 상세정보 가져오기")
-    @GetMapping("/accounts/{metaSeq}")
-    @ResponseStatus(HttpStatus.OK)
-    public AccountDetailResponse getAccountDetail(
-            @MemberInfo AuthenticatedMember member,
-            @PathVariable int metaSeq
-    ) {
-        return memberService.getAccountDetail(metaSeq, member.getMemberId());
-    }
+//    @ApiOperation("내 정산목록의 상세정보 가져오기")
+//    @GetMapping("/accounts/{metaSeq}")
+//    @ResponseStatus(HttpStatus.OK)
+//    public AccountDetailResponse getAccountDetail(
+//            @MemberInfo AuthenticatedMember member,
+//            @PathVariable int metaSeq
+//    ) {
+//        return memberService.getAccountDetail(metaSeq, member.getMemberId());
+//    }
 }

@@ -1,6 +1,5 @@
 package com.vitasoft.goodsgrapher.domain.model.dto;
 
-import com.vitasoft.goodsgrapher.domain.model.kipris.entity.DesignInfo;
 import com.vitasoft.goodsgrapher.domain.model.kipris.entity.ModelInfo;
 
 import java.time.LocalDateTime;
@@ -17,28 +16,40 @@ public class GetMetadataDto {
     private final String companyName;
     private final String regId;
     private final LocalDateTime regDate;
-    private int imgCount;
-    private DesignInfo designInfo;
+    private final String pathImg;
 
-    public GetMetadataDto(ModelInfo metadata) {
-        this.modelSeq = metadata.getModelSeq();
-        this.productCategory = metadata.getProductCategory();
-        this.articleName = metadata.getArticleName();
-        this.modelName = metadata.getModelName();
-        this.companyName = metadata.getCompanyName();
-        this.regId = metadata.getRegId();
-        this.regDate = metadata.getRegDate();
-        this.designInfo = metadata.getDesignInfo();
+    public GetMetadataDto(ModelInfo modelInfo) {
+        this.modelSeq = modelInfo.getModelSeq();
+        this.productCategory = modelInfo.getProductCategory();
+        this.articleName = modelInfo.getArticleName();
+        this.modelName = modelInfo.getModelName();
+        this.companyName = modelInfo.getCompanyName();
+        this.regId = modelInfo.getRegId();
+        this.regDate = modelInfo.getRegDate();
+        this.pathImg = modelInfo.getPathImgGoods();
     }
 
     public GetMetadataDto(ModelInfo modelInfo, String type) {
-        this(modelInfo);
-        this.designInfo = modelInfo.getDesignInfo();
+        this.modelSeq = modelInfo.getModelSeq();
+        this.productCategory = modelInfo.getProductCategory();
+        this.articleName = modelInfo.getArticleName();
+        this.modelName = modelInfo.getModelName();
+        this.companyName = modelInfo.getCompanyName();
+        this.regId = modelInfo.getRegId();
+        this.regDate = modelInfo.getRegDate();
+        this.pathImg = modelInfo.getPathImgGoods();
         this.type = type;
     }
 
-    public GetMetadataDto(ModelInfo metadata, int count) {
-        this(metadata);
-        this.imgCount = count;
+    public GetMetadataDto(ModelInfo modelInfo, String type, String imgPath) {
+        this.modelSeq = modelInfo.getModelSeq();
+        this.productCategory = modelInfo.getProductCategory();
+        this.articleName = modelInfo.getArticleName();
+        this.modelName = modelInfo.getModelName();
+        this.companyName = modelInfo.getCompanyName();
+        this.regId = modelInfo.getRegId();
+        this.regDate = modelInfo.getRegDate();
+        this.pathImg = imgPath;
+        this.type = type;
     }
 }

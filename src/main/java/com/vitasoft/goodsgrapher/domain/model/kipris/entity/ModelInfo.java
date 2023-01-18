@@ -5,8 +5,6 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
 import lombok.Data;
@@ -14,7 +12,7 @@ import lombok.RequiredArgsConstructor;
 import org.hibernate.annotations.DynamicUpdate;
 
 @Entity
-@Table(name = "meta_model_Info")
+@Table(name = "meta_model_info")
 @Data
 @DynamicUpdate
 @RequiredArgsConstructor
@@ -23,9 +21,7 @@ public class ModelInfo {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int modelSeq;
 
-    @ManyToOne
-    @JoinColumn(name = "REGISTRATION_NUMBER")
-    private DesignInfo designInfo;
+    private String registrationNumber;
 
     private String highProductCategory;
 

@@ -2,10 +2,12 @@ package com.vitasoft.goodsgrapher.domain.service;
 
 import com.vitasoft.goodsgrapher.domain.model.dto.GetCategoryDto;
 import com.vitasoft.goodsgrapher.domain.model.dto.GetMetadataDto;
+import com.vitasoft.goodsgrapher.domain.model.kipris.entity.DesignInfo;
 import com.vitasoft.goodsgrapher.domain.model.kipris.entity.ModelInfo;
 import com.vitasoft.goodsgrapher.domain.model.kipris.repository.ArticleFileRepository;
 import com.vitasoft.goodsgrapher.domain.model.kipris.repository.CodeRepository;
 import com.vitasoft.goodsgrapher.domain.model.kipris.repository.DesignImagesRepository;
+import com.vitasoft.goodsgrapher.domain.model.kipris.repository.DesignInfoRepository;
 import com.vitasoft.goodsgrapher.domain.model.kipris.repository.ModelInfoRepository;
 
 import java.util.ArrayList;
@@ -26,6 +28,8 @@ public class MetadataService {
     private final ArticleFileRepository articleFileRepository;
 
     private final ModelInfoRepository modelInfoRepository;
+
+    private final DesignInfoRepository designInfoRepository;
 
     private final CodeRepository codeRepository;
 
@@ -48,15 +52,28 @@ public class MetadataService {
 
         List<ModelInfo> modelInfoList = modelInfoRepository.findAllByModelNameIsNotNullAndUseYn('Y');
 
+//        for (String pathImage : images) {
+//            modelInfoList.forEach(modelInfo -> {
+//                if (modelInfo.getPathImgGoods() != null && modelInfo.getPathImgGoods().contains(pathImage)) {
+//                    metadataDtos.add(new GetMetadataDto(modelInfo, "photo"));
+//                } else if (modelInfo.getDesignInfo().getImgPath() != null && modelInfo.getDesignInfo().getImgPath().contains(pathImage)) {
+//                    metadataDtos.add(new GetMetadataDto(modelInfo, "drawing"));
+//                }
+//            });
+//        }
+
         for (String pathImage : images) {
             modelInfoList.forEach(modelInfo -> {
                 if (modelInfo.getPathImgGoods() != null && modelInfo.getPathImgGoods().contains(pathImage)) {
                     metadataDtos.add(new GetMetadataDto(modelInfo, "photo"));
-                } else if (modelInfo.getDesignInfo().getImgPath() != null && modelInfo.getDesignInfo().getImgPath().contains(pathImage)) {
-                    metadataDtos.add(new GetMetadataDto(modelInfo, "drawing"));
+                } else {
+                    DesignInfo designInfo = designInfoRepository.findByRegistrationNumber(modelInfo.getRegistrationNumber());
+                    if (designInfo.getImgPath() != null && designInfo.getImgPath().contains(pathImage))
+                        metadataDtos.add(new GetMetadataDto(modelInfo, "drawing", designInfo.getImgPath()));
                 }
             });
         }
+
         return metadataDtos;
     }
 
