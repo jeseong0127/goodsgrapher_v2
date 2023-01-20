@@ -5,8 +5,6 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
 import lombok.Data;
@@ -22,10 +20,6 @@ public class DesignImages {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int designImgSeq;
-
-    @ManyToOne
-    @JoinColumn(name = "DESIGN_SEQ")
-    private DesignInfo designInfo;
 
     private String imageName;
 

@@ -1,6 +1,8 @@
 package com.vitasoft.goodsgrapher.domain.service;
 
+import com.vitasoft.goodsgrapher.domain.exception.metadata.MetadataNotFoundException;
 import com.vitasoft.goodsgrapher.domain.model.dto.GetCategoryDto;
+import com.vitasoft.goodsgrapher.domain.model.dto.GetMetadataDetailDto;
 import com.vitasoft.goodsgrapher.domain.model.dto.GetMetadataDto;
 import com.vitasoft.goodsgrapher.domain.model.kipris.entity.DesignInfo;
 import com.vitasoft.goodsgrapher.domain.model.kipris.entity.ModelInfo;
@@ -111,14 +113,14 @@ public class MetadataService {
 //        metadataRepository.save(metadata);
 //    }
 
-//    @Transactional(readOnly = true)
-//    public GetMetadataDto getMetadataDetail(int metaSeq, String memberId) {
-//        ModelInfo modelInfo = modelRepository.findById(metaSeq).orElseThrow(() -> new MetadataNotFoundException(metaSeq));
-//
-//        List<DesignImages> designImages = designImagesRepository.findAllByDesignSeq(modelInfo.getDesignInfo().getDesignSeq());
-//
-//        return new GetMetadataDto(modelInfo, designImages);
-//    }
+    @Transactional(readOnly = true)
+    public GetMetadataDetailDto getMetadataDetail(int modelSeq) {
+        ModelInfo modelInfo = modelInfoRepository.findById(modelSeq).orElseThrow(() -> new MetadataNotFoundException(modelSeq));
+
+        DesignInfo designInfo = designInfoRepository.findByRegistrationNumber(modelInfo.getRegistrationNumber());
+
+        return new GetMetadataDetailDto(modelInfo, designInfo);
+    }
 
 //    @Transactional(readOnly = true)
 //    public List<GetArticleFileDto> getMetadataImages(int metaSeq, String memberId) {
