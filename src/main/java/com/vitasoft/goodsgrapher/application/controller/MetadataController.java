@@ -1,6 +1,7 @@
 package com.vitasoft.goodsgrapher.application.controller;
 
 import com.vitasoft.goodsgrapher.application.response.CategoryResponse;
+import com.vitasoft.goodsgrapher.application.response.MetadataDetailResponse;
 import com.vitasoft.goodsgrapher.application.response.MetadataResponse;
 import com.vitasoft.goodsgrapher.domain.service.MetadataService;
 import io.swagger.annotations.ApiOperation;
@@ -58,15 +59,14 @@ public class MetadataController {
 //        metadataService.cancelReserveMetadata(metaSeq);
 //    }
 
-//    @ApiOperation("메타데이터 작업보기")
-//    @GetMapping("/{metaSeq}")
-//    @ResponseStatus(HttpStatus.OK)
-//    public MetadataDetailResponse getMetadataDetail(
-//            @MemberInfo AuthenticatedMember member,
-//            @PathVariable int metaSeq
-//    ) {
-//        return new MetadataDetailResponse(metadataService.getMetadataDetail(metaSeq, member.getMemberId()));
-//    }
+    @ApiOperation("메타데이터 작업보기")
+    @GetMapping("/{modelSeq}")
+    @ResponseStatus(HttpStatus.OK)
+    public MetadataDetailResponse getMetadataDetail(
+            @PathVariable int modelSeq
+    ) {
+        return new MetadataDetailResponse(metadataService.getMetadataDetail(modelSeq));
+    }
 
 //    @ApiOperation("메타데이터 작업 삭제하기")
 //    @DeleteMapping("/{metaSeq}")
