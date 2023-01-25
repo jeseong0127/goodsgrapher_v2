@@ -1,6 +1,7 @@
 package com.vitasoft.goodsgrapher.domain.service;
 
 import com.vitasoft.goodsgrapher.domain.exception.metadata.DuplicationReserveIdException;
+import com.vitasoft.goodsgrapher.domain.exception.metadata.ExceededReservedCountLimitException;
 import com.vitasoft.goodsgrapher.domain.exception.metadata.ModelInfoNotFoundException;
 import com.vitasoft.goodsgrapher.domain.model.dto.GetCategoryDto;
 import com.vitasoft.goodsgrapher.domain.model.dto.GetMetadataDetailDto;
@@ -100,6 +101,10 @@ public class MetadataService {
 //    }
 
     public void reserveMetadata(String memberId, int modelSeq) {
+        int maxReserveCount = 3;
+        if (workRepository.countByRegIdAndStatus(memberId, "1") >= maxReserveCount)
+            throw new ExceededReservedCountLimitException();
+
         Work work = workRepository.findTopByModelSeqAndRegIdOrderByRegDateDesc(modelSeq, memberId);
 
         if (work != null && !Objects.equals(work.getStatus(), "0"))

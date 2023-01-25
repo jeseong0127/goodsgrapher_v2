@@ -8,4 +8,6 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface WorkRepository extends JpaRepository<Work, Integer> {
     Work findTopByModelSeqAndRegIdOrderByRegDateDesc(int modelSeq, String memberId);
+
+    int countByRegIdAndStatus(String memberId, String status);
 }
