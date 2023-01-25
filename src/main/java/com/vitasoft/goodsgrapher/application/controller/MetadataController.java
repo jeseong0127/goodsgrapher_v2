@@ -12,6 +12,7 @@ import java.util.List;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -53,14 +54,15 @@ public class MetadataController {
         metadataService.reserveMetadata(member.getMemberId(), modelSeq);
     }
 
-//    @ApiOperation("메타데이터 예약 취소하기")
-//    @DeleteMapping("/reservation/{metaSeq}")
-//    @ResponseStatus(HttpStatus.NO_CONTENT)
-//    public void cancelReserveMetadata(
-//            @PathVariable int metaSeq
-//    ) {
-//        metadataService.cancelReserveMetadata(metaSeq);
-//    }
+    @ApiOperation("메타데이터 예약 취소하기")
+    @DeleteMapping("/reservation/{modelSeq}")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public void cancelReserveMetadata(
+            @MemberInfo AuthenticatedMember member,
+            @PathVariable int modelSeq
+    ) {
+        metadataService.cancelReserveMetadata(member.getMemberId(), modelSeq);
+    }
 
     @ApiOperation("메타데이터 작업보기")
     @GetMapping("/{modelSeq}")
@@ -71,7 +73,7 @@ public class MetadataController {
         return new MetadataDetailResponse(metadataService.getMetadataDetail(modelSeq));
     }
 
-//    @ApiOperation("메타데이터 작업 삭제하기")
+//    @ApiOperation("메타데이터 작업물 삭제하기")
 //    @DeleteMapping("/{metaSeq}")
 //    @ResponseStatus(HttpStatus.OK)
 //    public void deleteWorkedMetadata(

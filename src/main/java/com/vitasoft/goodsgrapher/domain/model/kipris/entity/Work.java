@@ -29,10 +29,19 @@ public class Work {
 
     private String status;
 
-    public Work(String regId, int modelSeq) {
+    public Work start(String regId, int modelSeq) {
         this.modelSeq = modelSeq;
         this.regId = regId;
         this.regDate = LocalDateTime.now();
         this.status = "1";
+        return this;
+    }
+
+    public Work cancel(String regId, int modelSeq) {
+        this.modelSeq = modelSeq;
+        this.regId = regId;
+        this.regDate = LocalDateTime.now();
+        this.status = "0";
+        return this;
     }
 }
