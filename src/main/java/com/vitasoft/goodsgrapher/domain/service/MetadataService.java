@@ -1,7 +1,7 @@
 package com.vitasoft.goodsgrapher.domain.service;
 
 import com.vitasoft.goodsgrapher.domain.exception.metadata.DuplicationReserveIdException;
-import com.vitasoft.goodsgrapher.domain.exception.metadata.MetadataNotFoundException;
+import com.vitasoft.goodsgrapher.domain.exception.metadata.ModelInfoNotFoundException;
 import com.vitasoft.goodsgrapher.domain.model.dto.GetCategoryDto;
 import com.vitasoft.goodsgrapher.domain.model.dto.GetMetadataDetailDto;
 import com.vitasoft.goodsgrapher.domain.model.dto.GetMetadataDto;
@@ -105,19 +105,17 @@ public class MetadataService {
         if (work != null && !Objects.equals(work.getStatus(), "0"))
             throw new DuplicationReserveIdException(modelSeq);
 
-        workRepository.save(new Work(memberId, modelSeq));
+        workRepository.save(new Work().start(memberId, modelSeq));
     }
 
-//    public void cancelReserveMetadata(int metaSeq) {
-//        ModelInfo metadata = metadataRepository.findById(metaSeq).orElseThrow(() -> new MetadataNotFoundException(metaSeq));
-//        metadata.setReserveId(defaultReserveId);
-//        metadata.setReserveDate(null);
-//        metadataRepository.save(metadata);
-//    }
+    public void cancelReserveMetadata(String memberId, int modelSeq) {
+        modelInfoRepository.findById(modelSeq).orElseThrow(() -> new ModelInfoNotFoundException(modelSeq));
+        workRepository.save(new Work().cancel(memberId, modelSeq));
+    }
 
     @Transactional(readOnly = true)
     public GetMetadataDetailDto getMetadataDetail(int modelSeq) {
-        ModelInfo modelInfo = modelInfoRepository.findById(modelSeq).orElseThrow(() -> new MetadataNotFoundException(modelSeq));
+        ModelInfo modelInfo = modelInfoRepository.findById(modelSeq).orElseThrow(() -> new ModelInfoNotFoundException(modelSeq));
 
         DesignInfo designInfo = designInfoRepository.findByRegistrationNumber(modelInfo.getRegistrationNumber());
 

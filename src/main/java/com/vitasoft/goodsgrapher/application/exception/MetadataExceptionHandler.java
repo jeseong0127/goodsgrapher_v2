@@ -5,7 +5,7 @@ import com.vitasoft.goodsgrapher.domain.exception.metadata.ArticleFileNotFoundEx
 import com.vitasoft.goodsgrapher.domain.exception.metadata.DuplicationReserveIdException;
 import com.vitasoft.goodsgrapher.domain.exception.metadata.ExceededReservedCountLimitException;
 import com.vitasoft.goodsgrapher.domain.exception.metadata.ExistsWorkedMetadataException;
-import com.vitasoft.goodsgrapher.domain.exception.metadata.MetadataNotFoundException;
+import com.vitasoft.goodsgrapher.domain.exception.metadata.ModelInfoNotFoundException;
 import com.vitasoft.goodsgrapher.domain.exception.metadata.RegIdIsNotWorkerException;
 
 import org.springframework.core.Ordered;
@@ -18,9 +18,9 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 @RestControllerAdvice
 @Order(Ordered.HIGHEST_PRECEDENCE)
 public class MetadataExceptionHandler {
-    @ExceptionHandler(MetadataNotFoundException.class)
+    @ExceptionHandler(ModelInfoNotFoundException.class)
     @ResponseStatus(HttpStatus.NOT_FOUND)
-    public ErrorResponse handleMetadataNotFound(MetadataNotFoundException exception) {
+    public ErrorResponse handleMetadataNotFound(ModelInfoNotFoundException exception) {
         return new ErrorResponse(HttpStatus.NOT_FOUND, "Metadata-001", exception.getMessage());
     }
 
