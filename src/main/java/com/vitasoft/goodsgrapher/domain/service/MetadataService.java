@@ -3,6 +3,7 @@ package com.vitasoft.goodsgrapher.domain.service;
 import com.vitasoft.goodsgrapher.domain.exception.metadata.DuplicationReserveIdException;
 import com.vitasoft.goodsgrapher.domain.exception.metadata.ExceededReservedCountLimitException;
 import com.vitasoft.goodsgrapher.domain.exception.metadata.ModelInfoNotFoundException;
+import com.vitasoft.goodsgrapher.domain.exception.metadata.WorkModelNotFoundException;
 import com.vitasoft.goodsgrapher.domain.model.dto.GetCategoryDto;
 import com.vitasoft.goodsgrapher.domain.model.dto.GetMetadataDetailDto;
 import com.vitasoft.goodsgrapher.domain.model.dto.GetMetadataDto;
@@ -16,17 +17,17 @@ import com.vitasoft.goodsgrapher.domain.model.kipris.repository.DesignInfoReposi
 import com.vitasoft.goodsgrapher.domain.model.kipris.repository.ModelInfoRepository;
 import com.vitasoft.goodsgrapher.domain.model.kipris.repository.WorkRepository;
 
+import java.time.LocalDateTime;
+import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
 
 import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-@Slf4j
 @Service
 @RequiredArgsConstructor
 @Transactional
@@ -63,15 +64,7 @@ public class MetadataService {
 
         List<ModelInfo> modelInfoList = modelInfoRepository.findAllByModelNameIsNotNullAndUseYn('Y');
 
-//        for (String pathImage : images) {
-//            modelInfoList.forEach(modelInfo -> {
-//                if (modelInfo.getPathImgGoods() != null && modelInfo.getPathImgGoods().contains(pathImage)) {
-//                    metadataDtos.add(new GetMetadataDto(modelInfo, "photo"));
-//                } else if (modelInfo.getDesignInfo().getImgPath() != null && modelInfo.getDesignInfo().getImgPath().contains(pathImage)) {
-//                    metadataDtos.add(new GetMetadataDto(modelInfo, "drawing"));
-//                }
-//            });
-//        }
+        cancelExcessReserveTime();
 
         for (String pathImage : images) {
             modelInfoList.forEach(modelInfo -> {
@@ -88,17 +81,17 @@ public class MetadataService {
         return metadataDtos;
     }
 
-//    public void cancelExcessReserveTime() {
-//        LocalDateTime now = LocalDateTime.now();
-//
-//        List<ModelInfo> reservedMetadataList = metadataRepository.findAllByReserveDateNotNull();
-//
-//        for (ModelInfo reservedMetadata : reservedMetadataList) {
-//            if (ChronoUnit.SECONDS.between(reservedMetadata.getReserveDate(), now) > 172800) {
-//                cancelReserveMetadata(reservedMetadata.getMetaSeq());
-//            }
-//        }
-//    }
+    public void cancelExcessReserveTime() {
+        LocalDateTime now = LocalDateTime.now();
+
+        List<Work> workList = workRepository.findAllByStatus("1");
+
+        for (Work work : workList) {
+            if (ChronoUnit.SECONDS.between(work.getRegDate(), now) > 172800) {
+                cancelReserveMetadata(work.getWorkSeq());
+            }
+        }
+    }
 
     public void reserveMetadata(String memberId, int modelSeq) {
         int maxReserveCount = 3;
@@ -113,14 +106,17 @@ public class MetadataService {
         workRepository.save(new Work().start(memberId, modelSeq));
     }
 
-    public void cancelReserveMetadata(String memberId, int modelSeq) {
-        modelInfoRepository.findById(modelSeq).orElseThrow(() -> new ModelInfoNotFoundException(modelSeq));
-        workRepository.save(new Work().cancel(memberId, modelSeq));
+    public void cancelReserveMetadata(int workSeq) {
+        Work work = workRepository.findById(workSeq)
+                .orElseThrow(() -> new WorkModelNotFoundException(workSeq));
+
+        work.setStatus("0");
     }
 
     @Transactional(readOnly = true)
     public GetMetadataDetailDto getMetadataDetail(int modelSeq) {
-        ModelInfo modelInfo = modelInfoRepository.findById(modelSeq).orElseThrow(() -> new ModelInfoNotFoundException(modelSeq));
+        ModelInfo modelInfo = modelInfoRepository.findById(modelSeq)
+                .orElseThrow(() -> new ModelInfoNotFoundException(modelSeq));
 
         DesignInfo designInfo = designInfoRepository.findByRegistrationNumber(modelInfo.getRegistrationNumber());
 
