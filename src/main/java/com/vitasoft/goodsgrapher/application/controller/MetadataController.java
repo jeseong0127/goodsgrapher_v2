@@ -3,6 +3,8 @@ package com.vitasoft.goodsgrapher.application.controller;
 import com.vitasoft.goodsgrapher.application.response.CategoryResponse;
 import com.vitasoft.goodsgrapher.application.response.MetadataDetailResponse;
 import com.vitasoft.goodsgrapher.application.response.MetadataResponse;
+import com.vitasoft.goodsgrapher.core.security.AuthenticatedMember;
+import com.vitasoft.goodsgrapher.core.security.MemberInfo;
 import com.vitasoft.goodsgrapher.domain.service.MetadataService;
 import io.swagger.annotations.ApiOperation;
 
@@ -12,6 +14,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseStatus;
@@ -40,15 +43,15 @@ public class MetadataController {
         }
     }
 
-//    @ApiOperation("메타데이터 예약하기")
-//    @PostMapping("/reservation/{metaSeq}")
-//    @ResponseStatus(HttpStatus.CREATED)
-//    public void reserveMetadata(
-//            @MemberInfo AuthenticatedMember member,
-//            @PathVariable int metaSeq
-//    ) {
-//        metadataService.reserveMetadata(member.getMemberId(), metaSeq);
-//    }
+    @ApiOperation("메타데이터 예약하기")
+    @PostMapping("/reservation/{modelSeq}")
+    @ResponseStatus(HttpStatus.CREATED)
+    public void reserveMetadata(
+            @MemberInfo AuthenticatedMember member,
+            @PathVariable int modelSeq
+    ) {
+        metadataService.reserveMetadata(member.getMemberId(), modelSeq);
+    }
 
 //    @ApiOperation("메타데이터 예약 취소하기")
 //    @DeleteMapping("/reservation/{metaSeq}")

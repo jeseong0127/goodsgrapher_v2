@@ -1,25 +1,31 @@
 package com.vitasoft.goodsgrapher.domain.service;
 
+import com.vitasoft.goodsgrapher.domain.exception.metadata.DuplicationReserveIdException;
 import com.vitasoft.goodsgrapher.domain.exception.metadata.MetadataNotFoundException;
 import com.vitasoft.goodsgrapher.domain.model.dto.GetCategoryDto;
 import com.vitasoft.goodsgrapher.domain.model.dto.GetMetadataDetailDto;
 import com.vitasoft.goodsgrapher.domain.model.dto.GetMetadataDto;
 import com.vitasoft.goodsgrapher.domain.model.kipris.entity.DesignInfo;
 import com.vitasoft.goodsgrapher.domain.model.kipris.entity.ModelInfo;
+import com.vitasoft.goodsgrapher.domain.model.kipris.entity.Work;
 import com.vitasoft.goodsgrapher.domain.model.kipris.repository.ArticleFileRepository;
 import com.vitasoft.goodsgrapher.domain.model.kipris.repository.CodeRepository;
 import com.vitasoft.goodsgrapher.domain.model.kipris.repository.DesignImagesRepository;
 import com.vitasoft.goodsgrapher.domain.model.kipris.repository.DesignInfoRepository;
 import com.vitasoft.goodsgrapher.domain.model.kipris.repository.ModelInfoRepository;
+import com.vitasoft.goodsgrapher.domain.model.kipris.repository.WorkRepository;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+@Slf4j
 @Service
 @RequiredArgsConstructor
 @Transactional
@@ -32,6 +38,8 @@ public class MetadataService {
     private final ModelInfoRepository modelInfoRepository;
 
     private final DesignInfoRepository designInfoRepository;
+
+    private final WorkRepository workRepository;
 
     private final CodeRepository codeRepository;
 
@@ -91,20 +99,14 @@ public class MetadataService {
 //        }
 //    }
 
-//    public void reserveMetadata(String memberId, int metaSeq) {
-//        int reservedCount = metadataRepository.countByReserveId(memberId);
-//        if (reservedCount >= 3)
-//            throw new ExceededReservedCountLimitException();
-//
-//        ModelInfo metadata = metadataRepository.findById(metaSeq).orElseThrow(() -> new MetadataNotFoundException(metaSeq));
-//
-//        if (metadata.getReserveId().equals(memberId))
-//            throw new DuplicationReserveIdException(metadata.getMetaSeq());
-//
-//        metadata.setReserveId(memberId);
-//        metadata.setReserveDate(LocalDateTime.now());
-//        metadataRepository.save(metadata);
-//    }
+    public void reserveMetadata(String memberId, int modelSeq) {
+        Work work = workRepository.findTopByModelSeqAndRegIdOrderByRegDateDesc(modelSeq, memberId);
+
+        if (work != null && !Objects.equals(work.getStatus(), "0"))
+            throw new DuplicationReserveIdException(modelSeq);
+
+        workRepository.save(new Work(memberId, modelSeq));
+    }
 
 //    public void cancelReserveMetadata(int metaSeq) {
 //        ModelInfo metadata = metadataRepository.findById(metaSeq).orElseThrow(() -> new MetadataNotFoundException(metaSeq));
