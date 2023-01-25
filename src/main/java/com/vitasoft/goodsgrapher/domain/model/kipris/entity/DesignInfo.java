@@ -31,6 +31,8 @@ public class DesignInfo {
 
     private String registrationNumber;
 
+    private String regReferenceNumber;
+
     private String designNumber;
 
     private String applicationNumber;
@@ -41,8 +43,13 @@ public class DesignInfo {
 
     private String applicantName;
 
-    @Column(name = "LASTRIGHT_HOLDERNAME")
+    private String applicantAddress;
+
+    @Column(name = "LASTRIGHT_HOLDER_NAME")
     private String lastRightHolderName;
+
+    @Column(name = "LASTRIGHT_HOLDER_ADDRESS")
+    private String lastRightHolderAddress;
 
     private String imgUrl;
 
