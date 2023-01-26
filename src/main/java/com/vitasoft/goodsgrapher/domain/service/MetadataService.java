@@ -18,7 +18,6 @@ import com.vitasoft.goodsgrapher.domain.model.kipris.repository.ModelInfoReposit
 import com.vitasoft.goodsgrapher.domain.model.kipris.repository.WorkRepository;
 
 import java.time.LocalDateTime;
-import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
@@ -84,13 +83,9 @@ public class MetadataService {
     public void cancelExcessReserveTime() {
         LocalDateTime now = LocalDateTime.now();
 
-        List<Work> workList = workRepository.findAllByStatus("1");
-
-        for (Work work : workList) {
-            if (ChronoUnit.SECONDS.between(work.getRegDate(), now) > 172800) {
-                cancelReserveMetadata(work.getWorkSeq());
-            }
-        }
+        workRepository.findAllByStatus("1").stream()
+                .filter(work -> work.getRegDate().plusDays(2).isBefore(now))
+                .forEach(work -> cancelReserveMetadata(work.getWorkSeq()));
     }
 
     public void reserveMetadata(String memberId, int modelSeq) {
