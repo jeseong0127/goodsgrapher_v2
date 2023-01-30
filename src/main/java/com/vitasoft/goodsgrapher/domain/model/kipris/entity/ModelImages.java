@@ -9,12 +9,14 @@ import javax.persistence.Table;
 
 import lombok.Data;
 import lombok.RequiredArgsConstructor;
+import org.hibernate.annotations.DynamicInsert;
 import org.hibernate.annotations.DynamicUpdate;
 
 @Entity
 @Table(name = "meta_model_images")
 @Data
 @DynamicUpdate
+@DynamicInsert
 @RequiredArgsConstructor
 public class ModelImages {
     @Id
@@ -47,11 +49,7 @@ public class ModelImages {
 
     private char inspectPf;
 
-    private String articleName;
-
-    private String classCodeKr;
-
-    private String classCodeInt;
+    private String viewpoint;
 
     private String angle;
 
@@ -66,4 +64,19 @@ public class ModelImages {
     private String etc1;
 
     private String etc2;
+
+    public ModelImages(String memberId, ModelInfo metadata, String fileName, String fileSize, String fileType, int displayOrder, String brandCode) {
+        this.modelSeq = metadata.getModelSeq();
+        this.designImgSeq = 0;
+        this.displayOrder = displayOrder;
+        this.displayName = fileName;
+        this.fileName = fileName;
+        this.fileSize = fileSize;
+        this.fileType = fileType;
+        this.registrationNumber = metadata.getRegistrationNumber();
+        this.brandCode = brandCode;
+        this.regId = memberId;
+        this.regDate = LocalDateTime.now();
+        this.inspectPf = 'N';
+    }
 }

@@ -1,5 +1,6 @@
 package com.vitasoft.goodsgrapher.domain.model.kipris.entity;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import javax.persistence.Column;
@@ -71,7 +72,7 @@ public class DesignInfo {
 
     private String updId;
 
-    private String updDate;
+    private LocalDateTime updDate;
 
     private String etc;
 }

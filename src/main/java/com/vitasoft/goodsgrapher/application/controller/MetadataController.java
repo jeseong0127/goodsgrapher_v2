@@ -1,5 +1,6 @@
 package com.vitasoft.goodsgrapher.application.controller;
 
+import com.vitasoft.goodsgrapher.application.request.MetadataRequest;
 import com.vitasoft.goodsgrapher.application.response.CategoryResponse;
 import com.vitasoft.goodsgrapher.application.response.MetadataDetailResponse;
 import com.vitasoft.goodsgrapher.application.response.MetadataResponse;
@@ -9,11 +10,13 @@ import com.vitasoft.goodsgrapher.domain.service.MetadataService;
 import io.swagger.annotations.ApiOperation;
 
 import java.util.List;
+import javax.validation.Valid;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -92,15 +95,15 @@ public class MetadataController {
 //        return new ArticleFileResponse(metadataService.getMetadataImages(metaSeq, member.getMemberId()));
 //    }
 
-//    @ApiOperation("메타데이터 작업하기")
-//    @PostMapping
-//    @ResponseStatus(HttpStatus.CREATED)
-//    public void uploadMetadata(
-//            @MemberInfo AuthenticatedMember member,
-//            @Valid @ModelAttribute MetadataRequest metadataRequest
-//    ) {
-//        metadataService.uploadMetadata(member.getMemberId(), metadataRequest);
-//    }
+    @ApiOperation("메타데이터 작업하기")
+    @PostMapping
+    @ResponseStatus(HttpStatus.CREATED)
+    public void uploadMetadata(
+            @MemberInfo AuthenticatedMember member,
+            @Valid @ModelAttribute MetadataRequest metadataRequest
+    ) {
+        metadataService.uploadMetadata(member.getMemberId(), metadataRequest);
+    }
 
 //    @ApiOperation("메타데이터 수정하기")
 //    @PutMapping
