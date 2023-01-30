@@ -3,6 +3,7 @@ package com.vitasoft.goodsgrapher.domain.model.kipris.repository;
 import com.vitasoft.goodsgrapher.domain.model.kipris.entity.ModelImages;
 
 import java.util.List;
+import java.util.Optional;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
@@ -12,4 +13,6 @@ public interface ModelImagesRepository extends JpaRepository<ModelImages, Intege
     List<ModelImages> findAllByModelSeqAndRegId(int modelSeq, String memberId);
 
     List<ModelImages> findByModelSeqAndIsDeletedAndRegId(int modelSeq, String s, String memberId);
+
+    Optional<ModelImages> findTopByModelSeqAndRegIdOrderByUploadSeqDesc(int modelSeq, String memberId);
 }

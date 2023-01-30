@@ -131,7 +131,8 @@ public class MetadataService {
     }
 
     public void uploadMetadata(String memberId, MetadataRequest metadataRequest) {
-        int displayOrder = 0;
+        int displayOrder = modelImagesRepository.findTopByModelSeqAndRegIdOrderByUploadSeqDesc(metadataRequest.getModelSeq(), memberId)
+                .orElseGet(ModelImages::new).getDisplayOrder();
 
         ModelInfo modelInfo = modelInfoRepository.findById(metadataRequest.getModelSeq()).orElseThrow(() -> new ModelInfoNotFoundException(metadataRequest.getModelSeq()));
 
@@ -148,7 +149,7 @@ public class MetadataService {
     private void uploadMetadataImages(String memberId, MetadataRequest metadataRequest, ModelInfo modelInfo, int displayOrder, DesignInfo designInfo) {
         if (metadataRequest.getImages() != null) {
             for (MultipartFile image : metadataRequest.getImages()) {
-                ModelImages modelImages = imageService.uploadMetadataImage(memberId, modelInfo, image, displayOrder++, designInfo);
+                ModelImages modelImages = imageService.uploadMetadataImage(memberId, modelInfo, image, ++displayOrder, designInfo);
                 modelImagesRepository.save(modelImages);
             }
         }
