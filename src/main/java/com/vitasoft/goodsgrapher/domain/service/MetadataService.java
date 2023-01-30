@@ -8,6 +8,7 @@ import com.vitasoft.goodsgrapher.domain.exception.metadata.WorkModelNotFoundExce
 import com.vitasoft.goodsgrapher.domain.model.dto.GetCategoryDto;
 import com.vitasoft.goodsgrapher.domain.model.dto.GetMetadataDetailDto;
 import com.vitasoft.goodsgrapher.domain.model.dto.GetMetadataDto;
+import com.vitasoft.goodsgrapher.domain.model.dto.GetModelImageDto;
 import com.vitasoft.goodsgrapher.domain.model.kipris.entity.DesignInfo;
 import com.vitasoft.goodsgrapher.domain.model.kipris.entity.ModelImages;
 import com.vitasoft.goodsgrapher.domain.model.kipris.entity.ModelInfo;
@@ -127,12 +128,12 @@ public class MetadataService {
         return new GetMetadataDetailDto(modelInfo, designInfo);
     }
 
-//    @Transactional(readOnly = true)
-//    public List<GetArticleFileDto> getMetadataImages(int metaSeq, String memberId) {
-//        return articleFileRepository.findAllByBoardNameAndArticleIdAndIsDeletedAndRegId("METAIMG", metaSeq, "0", memberId).stream()
-//                .map(GetArticleFileDto::new)
-//                .collect(Collectors.toList());
-//    }
+    @Transactional(readOnly = true)
+    public List<GetModelImageDto> getMetadataImages(int modelSeq, String memberId) {
+        return modelImagesRepository.findByModelSeqAndIsDeletedAndRegId(modelSeq, "0", memberId).stream()
+                .map(GetModelImageDto::new)
+                .collect(Collectors.toList());
+    }
 
     public void uploadMetadata(String memberId, MetadataRequest metadataRequest) {
         int displayOrder = 0;

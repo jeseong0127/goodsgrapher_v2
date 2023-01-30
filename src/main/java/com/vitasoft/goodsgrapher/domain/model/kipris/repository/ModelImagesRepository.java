@@ -10,4 +10,6 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface ModelImagesRepository extends JpaRepository<ModelImages, Integer> {
     List<ModelImages> findAllByModelSeqAndRegId(int modelSeq, String memberId);
+
+    List<ModelImages> findByModelSeqAndIsDeletedAndRegId(int modelSeq, String s, String memberId);
 }
