@@ -73,9 +73,8 @@ public class MetadataService {
                 if (modelInfo.getPathImgGoods() != null && modelInfo.getPathImgGoods().contains(pathImage)) {
                     metadataDtos.add(new GetMetadataDto(modelInfo, "photo"));
                 } else {
-                    DesignInfo designInfo = designInfoRepository.findByRegistrationNumber(modelInfo.getRegistrationNumber());
-                    if (designInfo.getImgPath() != null && designInfo.getImgPath().contains(pathImage))
-                        metadataDtos.add(new GetMetadataDto(modelInfo, "drawing", designInfo.getImgPath()));
+                    if (modelInfo.getDesignInfo().getImgPath() != null && modelInfo.getDesignInfo().getImgPath().contains(pathImage))
+                        metadataDtos.add(new GetMetadataDto(modelInfo, "drawing", modelInfo.getDesignInfo().getImgPath()));
                 }
             });
         }
