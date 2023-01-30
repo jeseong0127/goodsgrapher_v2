@@ -11,8 +11,8 @@ import lombok.Data;
 @Data
 public class DeleteMetadataRequest {
     @NotNull
-    private final int metaSeq;
+    private final int modelSeq;
 
     @NotNull
-    private final List<Integer> articleFileId;
+    private final List<Integer> uploadSeqList;
 }

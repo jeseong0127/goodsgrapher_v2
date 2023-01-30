@@ -1,5 +1,6 @@
 package com.vitasoft.goodsgrapher.application.controller;
 
+import com.vitasoft.goodsgrapher.application.request.DeleteMetadataRequest;
 import com.vitasoft.goodsgrapher.application.request.MetadataRequest;
 import com.vitasoft.goodsgrapher.application.response.CategoryResponse;
 import com.vitasoft.goodsgrapher.application.response.MetadataDetailResponse;
@@ -10,6 +11,7 @@ import com.vitasoft.goodsgrapher.core.security.MemberInfo;
 import com.vitasoft.goodsgrapher.domain.service.MetadataService;
 import io.swagger.annotations.ApiOperation;
 
+import java.io.IOException;
 import java.util.List;
 import javax.validation.Valid;
 
@@ -116,15 +118,14 @@ public class MetadataController {
 //        metadataService.updateMetadata(member.getMemberId(), metadataRequest);
 //    }
 
-//    @ApiOperation("메타데이터 삭제하기")
-//    @DeleteMapping
-//    @ResponseStatus(HttpStatus.NO_CONTENT)
-//    public void deleteMetadata(
-//            @MemberInfo AuthenticatedMember member,
-//            @Valid @ModelAttribute DeleteMetadataRequest deleteMetadataRequest
-//    ) throws IOException {
-//        metadataService.deleteMetadata(member.getMemberId(), deleteMetadataRequest);
-//    }
+    @ApiOperation("메타데이터 삭제하기")
+    @DeleteMapping
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public void deleteMetadata(
+            @Valid @ModelAttribute DeleteMetadataRequest deleteMetadataRequest
+    ) throws IOException {
+        metadataService.deleteMetadata(deleteMetadataRequest);
+    }
 
     @ApiOperation("상위 카테고리 가져오기")
     @GetMapping("/high-category")
