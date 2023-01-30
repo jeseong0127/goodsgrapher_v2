@@ -1,5 +1,6 @@
 package com.vitasoft.goodsgrapher.domain.service;
 
+import com.vitasoft.goodsgrapher.application.request.DeleteMetadataRequest;
 import com.vitasoft.goodsgrapher.application.request.MetadataRequest;
 import com.vitasoft.goodsgrapher.domain.exception.metadata.DuplicationReserveIdException;
 import com.vitasoft.goodsgrapher.domain.exception.metadata.ExceededReservedCountLimitException;
@@ -22,6 +23,7 @@ import com.vitasoft.goodsgrapher.domain.model.kipris.repository.ModelInfoReposit
 import com.vitasoft.goodsgrapher.domain.model.kipris.repository.WorkRepository;
 import com.vitasoft.goodsgrapher.domain.model.sso.repository.MemberRepository;
 
+import java.io.IOException;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -169,18 +171,14 @@ public class MetadataService {
 //        }
 //    }
 
-//    public void deleteMetadata(String memberId, DeleteMetadataRequest deleteMetadataRequest) throws IOException {
-//        modelRepository.findByModelSeqAndRegId(deleteMetadataRequest.getMetaSeq(), memberId)
-//                .orElseThrow(RegIdIsNotWorkerException::new);
-//
-//        for (int articleFileId : deleteMetadataRequest.getArticleFileId()) {
-//            ArticleFile articleFile = articleFileRepository.findById(articleFileId)
-//                    .orElseThrow(ArticleFileNotFoundException::new);
-//            articleFile.setIsDeleted("1");
-//            articleFileRepository.save(articleFile);
-//            imageService.deleteMetadataImage(articleFile.getFileName());
-//        }
-//    }
+    public void deleteMetadata(DeleteMetadataRequest deleteMetadataRequest) throws IOException {
+        for (int uploadSeq : deleteMetadataRequest.getUploadSeqList()) {
+            ModelImages modelImages = modelImagesRepository.findById(uploadSeq)
+                    .orElseThrow(ArithmeticException::new);
+            modelImages.setIsDeleted("1");
+            imageService.deleteMetadataImage(modelImages.getFileName());
+        }
+    }
 
     public void deleteWorkedMetadata(int modelSeq, String memberId) {
         ModelInfo modelInfo = modelInfoRepository.findById(modelSeq).orElseThrow(() -> new ModelInfoNotFoundException(modelSeq));
