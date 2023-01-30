@@ -14,14 +14,11 @@ import com.vitasoft.goodsgrapher.domain.model.kipris.entity.DesignInfo;
 import com.vitasoft.goodsgrapher.domain.model.kipris.entity.ModelImages;
 import com.vitasoft.goodsgrapher.domain.model.kipris.entity.ModelInfo;
 import com.vitasoft.goodsgrapher.domain.model.kipris.entity.Work;
-import com.vitasoft.goodsgrapher.domain.model.kipris.repository.ArticleFileRepository;
 import com.vitasoft.goodsgrapher.domain.model.kipris.repository.CodeRepository;
-import com.vitasoft.goodsgrapher.domain.model.kipris.repository.DesignImagesRepository;
 import com.vitasoft.goodsgrapher.domain.model.kipris.repository.DesignInfoRepository;
 import com.vitasoft.goodsgrapher.domain.model.kipris.repository.ModelImagesRepository;
 import com.vitasoft.goodsgrapher.domain.model.kipris.repository.ModelInfoRepository;
 import com.vitasoft.goodsgrapher.domain.model.kipris.repository.WorkRepository;
-import com.vitasoft.goodsgrapher.domain.model.sso.repository.MemberRepository;
 
 import java.io.IOException;
 import java.time.LocalDateTime;
@@ -42,8 +39,6 @@ public class MetadataService {
 
     private final ImageService imageService;
 
-    private final ArticleFileRepository articleFileRepository;
-
     private final ModelInfoRepository modelInfoRepository;
 
     private final ModelImagesRepository modelImagesRepository;
@@ -53,10 +48,6 @@ public class MetadataService {
     private final WorkRepository workRepository;
 
     private final CodeRepository codeRepository;
-
-    private final MemberRepository memberRepository;
-
-    private final DesignImagesRepository designImagesRepository;
 
     public List<GetMetadataDto> getMetadataList() {
         return modelInfoRepository.findAll().stream()
@@ -105,12 +96,14 @@ public class MetadataService {
         if (workRepository.countByRegIdAndStatus(memberId, "1") >= maxReserveCount)
             throw new ExceededReservedCountLimitException();
 
-        Work work = workRepository.findTopByModelSeqAndRegIdOrderByRegDateDesc(modelSeq, memberId);
+        Work worked = workRepository.findTopByModelSeqAndRegIdOrderByRegDateDesc(modelSeq, memberId);
 
-        if (work != null && !Objects.equals(work.getStatus(), "0"))
+        if (worked != null && !Objects.equals(worked.getStatus(), "0"))
             throw new DuplicationReserveIdException(modelSeq);
 
-        workRepository.save(new Work().reserve(memberId, modelSeq));
+        Work work = new Work(memberId, modelSeq);
+        work.reserve();
+        workRepository.save(work);
     }
 
     public void cancelReserveMetadata(int workSeq) {
@@ -144,7 +137,9 @@ public class MetadataService {
 
         DesignInfo designInfo = designInfoRepository.findByRegistrationNumber(modelInfo.getRegistrationNumber());
 
-        workRepository.save(new Work().start(memberId, metadataRequest.getModelSeq()));
+        Work work = new Work(memberId, metadataRequest.getModelSeq());
+        work.start();
+        workRepository.save(work);
 
         uploadMetadataImages(memberId, metadataRequest, modelInfo, displayOrder, designInfo);
 
@@ -186,7 +181,9 @@ public class MetadataService {
         List<ModelImages> modelImages = modelImagesRepository.findAllByModelSeqAndRegId(modelInfo.getModelSeq(), memberId);
         modelImages.forEach(images -> images.setIsDeleted("1"));
 
-        workRepository.save(new Work().cancel(memberId, modelSeq));
+        Work work = new Work(memberId, modelSeq);
+        work.cancel();
+        workRepository.save(work);
     }
 
     @Transactional(readOnly = true)
