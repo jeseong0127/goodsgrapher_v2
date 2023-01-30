@@ -29,27 +29,21 @@ public class Work {
 
     private String status;
 
-    public Work reserve(String regId, int modelSeq) {
+    public Work(String regId, int modelSeq) {
         this.modelSeq = modelSeq;
         this.regId = regId;
         this.regDate = LocalDateTime.now();
+    }
+
+    public void reserve() {
         this.status = "1";
-        return this;
     }
 
-    public Work start(String regId, int modelSeq) {
-        this.modelSeq = modelSeq;
-        this.regId = regId;
-        this.regDate = LocalDateTime.now();
+    public void start() {
         this.status = "2";
-        return this;
     }
 
-    public Work cancel(String regId, int modelSeq) {
-        this.modelSeq = modelSeq;
-        this.regId = regId;
-        this.regDate = LocalDateTime.now();
+    public void cancel() {
         this.status = "0";
-        return this;
     }
 }
