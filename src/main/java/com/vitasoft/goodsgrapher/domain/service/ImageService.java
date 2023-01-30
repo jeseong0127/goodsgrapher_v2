@@ -4,6 +4,8 @@ import com.vitasoft.goodsgrapher.domain.exception.image.CannotUploadImageExcepti
 import com.vitasoft.goodsgrapher.domain.exception.image.CannotViewImageException;
 import com.vitasoft.goodsgrapher.domain.exception.image.ImageNotFoundException;
 import com.vitasoft.goodsgrapher.domain.model.kipris.entity.ArticleFile;
+import com.vitasoft.goodsgrapher.domain.model.kipris.entity.DesignInfo;
+import com.vitasoft.goodsgrapher.domain.model.kipris.entity.ModelImages;
 import com.vitasoft.goodsgrapher.domain.model.kipris.entity.ModelInfo;
 import com.vitasoft.goodsgrapher.domain.model.kipris.repository.ArticleFileRepository;
 
@@ -35,26 +37,28 @@ public class ImageService {
 
     private final ArticleFileRepository articleFileRepository;
 
-//    public ArticleFile uploadMetadataImage(String memberId, ModelInfo metadata, MultipartFile file, int displayOrder) {
-//        try {
-//            String fileType = "." + FilenameUtils.getExtension(file.getOriginalFilename());
-//            String fileSize = String.valueOf(file.getSize());
-//            String fileName = formatFileName(memberId, metadata, displayOrder, fileType);
-//            uploadImage(inspectPath, file, fileName);
-//            return new ArticleFile(metadata.getMetaSeq(), fileName.substring(fileName.lastIndexOf("/") + 1), fileName, fileSize, fileType, memberId, displayOrder);
-//        } catch (IOException e) {
-//            throw new CannotUploadImageException();
-//        }
-//    }
+    public ModelImages uploadMetadataImage(String memberId, ModelInfo modelInfo, MultipartFile file, int displayOrder, DesignInfo designInfo) {
+        try {
+            String brandCode = formatLastRightHolderName(designInfo.getLastRightHolderName());
+            String fileType = "." + FilenameUtils.getExtension(file.getOriginalFilename());
+            String fileName = formatFileName(memberId, modelInfo, designInfo, displayOrder, fileType, brandCode);
+            String fileSize = String.valueOf(file.getSize());
 
-//    private String formatFileName(String memberId, ModelInfo metadata, int displayOrder, String fileType) {
-//        String formatMetaSeq = String.format("%06d", metadata.getMetaSeq());
-//
-//        String[] folderNameParts = {memberId, formatLastRightHolderName(metadata.getLastRightHolderName()), metadata.getArticleName(), metadata.getModelName(), metadata.getRegistrationNumber().replaceAll("/", ""), metadata.getDsshpclsscd().contains("|") ? metadata.getDsshpclsscd().split("\\|")[0] : metadata.getDsshpclsscd()};
-//        String folderName = metadata.getDsshpclsscd().contains("|") ? metadata.getDsshpclsscd().split("\\|")[0] + "/" + String.join("_", folderNameParts) : metadata.getDsshpclsscd() + "/" + String.join("_", folderNameParts);
-//        String fileName = "/VS_2022_" + formatMetaSeq + "_0_-1_" + (displayOrder + 1) + fileType;
-//        return folderName + fileName;
-//    }
+            uploadImage(inspectPath, file, fileName);
+
+            return new ModelImages(memberId, modelInfo, fileName, fileSize, fileType, displayOrder, brandCode);
+        } catch (IOException e) {
+            throw new CannotUploadImageException();
+        }
+    }
+
+    private String formatFileName(String memberId, ModelInfo modelInfo, DesignInfo designInfo, int displayOrder, String fileType, String brandCode) {
+        String formatMetaSeq = String.format("%06d", modelInfo.getModelSeq());
+        String[] folderNameParts = {memberId, brandCode, designInfo.getArticleName(), modelInfo.getModelName(), modelInfo.getRegistrationNumber().replaceAll("/", ""), designInfo.getClassCode().contains("|") ? designInfo.getClassCode().split("\\|")[0] : designInfo.getClassCode()};
+        String folderName = designInfo.getClassCode().contains("|") ? designInfo.getClassCode().split("\\|")[0] + "/" + String.join("_", folderNameParts) : designInfo.getClassCode() + "/" + String.join("_", folderNameParts);
+        String fileName = "/VS_2022_" + formatMetaSeq + "_0_-1_" + (displayOrder + 1) + fileType;
+        return folderName + fileName;
+    }
 
     private String formatLastRightHolderName(String lastRightHolderName) {
         String[] brandNameList = {"애드크런치", "세라젬", "다이슨", "에이치피", "라네즈", "엘지전자", "현대모비스", "미쟝센", "슈피겐", "설화수", "삼성전자", "쓰리쎄븐"};
