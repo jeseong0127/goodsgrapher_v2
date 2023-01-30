@@ -75,15 +75,15 @@ public class MetadataController {
         return new MetadataDetailResponse(metadataService.getMetadataDetail(modelSeq));
     }
 
-//    @ApiOperation("메타데이터 작업물 삭제하기")
-//    @DeleteMapping("/{metaSeq}")
-//    @ResponseStatus(HttpStatus.OK)
-//    public void deleteWorkedMetadata(
-//            @MemberInfo AuthenticatedMember member,
-//            @PathVariable int metaSeq
-//    ) throws IOException {
-//        metadataService.deleteWorkedMetadata(metaSeq, member.getMemberId());
-//    }
+    @ApiOperation("메타데이터 작업 삭제하기")
+    @DeleteMapping("/{modelSeq}")
+    @ResponseStatus(HttpStatus.OK)
+    public void deleteWorkedMetadata(
+            @MemberInfo AuthenticatedMember member,
+            @PathVariable int modelSeq
+    ) {
+        metadataService.deleteWorkedMetadata(modelSeq, member.getMemberId());
+    }
 
 //    @ApiOperation("작업한 메타데이터 이미지보기")
 //    @GetMapping("/{metaSeq}/images")

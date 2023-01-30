@@ -44,4 +44,12 @@ public class Work {
         this.status = "2";
         return this;
     }
+
+    public Work cancel(String regId, int modelSeq) {
+        this.modelSeq = modelSeq;
+        this.regId = regId;
+        this.regDate = LocalDateTime.now();
+        this.status = "0";
+        return this;
+    }
 }
