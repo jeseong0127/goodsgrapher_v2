@@ -4,6 +4,7 @@ import com.vitasoft.goodsgrapher.application.request.MetadataRequest;
 import com.vitasoft.goodsgrapher.application.response.CategoryResponse;
 import com.vitasoft.goodsgrapher.application.response.MetadataDetailResponse;
 import com.vitasoft.goodsgrapher.application.response.MetadataResponse;
+import com.vitasoft.goodsgrapher.application.response.ModelImageResponse;
 import com.vitasoft.goodsgrapher.core.security.AuthenticatedMember;
 import com.vitasoft.goodsgrapher.core.security.MemberInfo;
 import com.vitasoft.goodsgrapher.domain.service.MetadataService;
@@ -85,15 +86,15 @@ public class MetadataController {
         metadataService.deleteWorkedMetadata(modelSeq, member.getMemberId());
     }
 
-//    @ApiOperation("작업한 메타데이터 이미지보기")
-//    @GetMapping("/{metaSeq}/images")
-//    @ResponseStatus(HttpStatus.OK)
-//    public ArticleFileResponse getMetadataImages(
-//            @MemberInfo AuthenticatedMember member,
-//            @PathVariable int metaSeq
-//    ) {
-//        return new ArticleFileResponse(metadataService.getMetadataImages(metaSeq, member.getMemberId()));
-//    }
+    @ApiOperation("작업한 메타데이터 이미지보기")
+    @GetMapping("/{modelSeq}/images")
+    @ResponseStatus(HttpStatus.OK)
+    public ModelImageResponse getMetadataImages(
+            @MemberInfo AuthenticatedMember member,
+            @PathVariable int modelSeq
+    ) {
+        return new ModelImageResponse(metadataService.getMetadataImages(modelSeq, member.getMemberId()));
+    }
 
     @ApiOperation("메타데이터 작업하기")
     @PostMapping
