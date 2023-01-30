@@ -181,19 +181,14 @@ public class MetadataService {
 //        }
 //    }
 
-//    public void deleteWorkedMetadata(int metaSeq, String memberId) throws IOException {
-//        ModelInfo metadata = metadataRepository.findById(metaSeq).orElseThrow(() -> new MetadataNotFoundException(metaSeq));
-//
-//        List<ArticleFile> articleFiles = articleFileRepository.findByArticleIdAndRegIdAndIsDeletedAndEtc2IsNull(metaSeq, memberId, "0");
-//        articleFiles.forEach(articleFile -> articleFile.setIsDeleted("1"));
-//        articleFileRepository.saveAll(articleFiles);
-//
-//        metadata.deleteMetadata();
-//
-//        for (ArticleFile articleFile : articleFiles) {
-//            imageService.deleteMetadataImage(articleFile.getFileName());
-//        }
-//    }
+    public void deleteWorkedMetadata(int modelSeq, String memberId) {
+        ModelInfo modelInfo = modelInfoRepository.findById(modelSeq).orElseThrow(() -> new ModelInfoNotFoundException(modelSeq));
+
+        List<ModelImages> modelImages = modelImagesRepository.findAllByModelSeqAndRegId(modelInfo.getModelSeq(), memberId);
+        modelImages.forEach(images -> images.setIsDeleted("1"));
+
+        workRepository.save(new Work().cancel(memberId, modelSeq));
+    }
 
     @Transactional(readOnly = true)
     public List<GetCategoryDto> getHighCategory() {
