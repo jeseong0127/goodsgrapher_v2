@@ -65,7 +65,9 @@ public class ModelImages {
 
     private String etc2;
 
-    public ModelImages(String memberId, ModelInfo metadata, String fileName, String fileSize, String fileType, int displayOrder, String brandCode) {
+    private String realPath;
+
+    public ModelImages(String memberId, ModelInfo metadata, String fileName, String fileSize, String fileType, int displayOrder, String brandCode, String realPath) {
         this.modelSeq = metadata.getModelSeq();
         this.designImgSeq = 0;
         this.displayOrder = displayOrder;
@@ -78,5 +80,6 @@ public class ModelImages {
         this.regId = memberId;
         this.regDate = LocalDateTime.now();
         this.inspectPf = 'N';
+        this.realPath = realPath;
     }
 }

@@ -28,6 +28,7 @@ public class GetModelImageDto {
     private final String designAssociativity;
     private final String obtainInfo;
     private final String relevance;
+    private final String realPath;
 
     public GetModelImageDto(ModelImages modelImages) {
         this.uploadSeq = modelImages.getUploadSeq();
@@ -50,5 +51,6 @@ public class GetModelImageDto {
         this.designAssociativity = modelImages.getDesignAssociativity();
         this.obtainInfo = modelImages.getObtainInfo();
         this.relevance = modelImages.getRelevance();
+        this.realPath = modelImages.getRealPath();
     }
 }
