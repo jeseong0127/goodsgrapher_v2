@@ -44,23 +44,23 @@ public class ImageService {
 
     public ModelImages uploadMetadataImage(String memberId, ModelInfo modelInfo, MultipartFile file, int displayOrder, DesignInfo designInfo) {
         int lastIndex = Objects.requireNonNull(file.getOriginalFilename()).lastIndexOf("_");
-        String indexNumber = file.getOriginalFilename().substring( lastIndex + 1, lastIndex + 2 );
+        String viewPoint = file.getOriginalFilename().substring( lastIndex + 1, lastIndex + 2 );
         String realPath = file.getOriginalFilename().substring( 0 ,lastIndex);
         String brandCode = formatLastRightHolderName(designInfo.getLastRightHolderName());
         String fileType = "." + FilenameUtils.getExtension(file.getOriginalFilename());
-        String fileName = formatFileName(memberId, modelInfo, designInfo, displayOrder, fileType, brandCode, indexNumber);
+        String fileName = formatFileName(memberId, modelInfo, designInfo, displayOrder, fileType, brandCode, viewPoint);
         String fileSize = String.valueOf(file.getSize());
 
         uploadImage(inspectPath, file, fileName);
 
-        return new ModelImages(memberId, modelInfo, fileName, fileSize, fileType, displayOrder, brandCode, realPath);
+        return new ModelImages(memberId, modelInfo, fileName, fileSize, fileType, displayOrder, brandCode, realPath, viewPoint);
     }
 
-    private String formatFileName(String memberId, ModelInfo modelInfo, DesignInfo designInfo, int displayOrder, String fileType, String brandCode, String indexNumber) {
+    private String formatFileName(String memberId, ModelInfo modelInfo, DesignInfo designInfo, int displayOrder, String fileType, String brandCode, String viewPoint) {
         String formatMetaSeq = String.format("%06d", modelInfo.getModelSeq());
         String[] folderNameParts = {memberId, brandCode, designInfo.getArticleName(), modelInfo.getModelName(), modelInfo.getRegistrationNumber().replaceAll("/", ""), designInfo.getClassCode().contains("|") ? designInfo.getClassCode().split("\\|")[0] : designInfo.getClassCode()};
         String folderName = designInfo.getClassCode().contains("|") ? designInfo.getClassCode().split("\\|")[0] + "/" + String.join("_", folderNameParts) : designInfo.getClassCode() + "/" + String.join("_", folderNameParts);
-        String fileName =  "/VS_2023_" + formatMetaSeq + "_" + indexNumber + "_0_" + displayOrder + fileType;
+        String fileName =  "/VS_2023_" + formatMetaSeq + "_" + viewPoint + "_0_" + displayOrder + fileType;
         return folderName + fileName;
     }
 

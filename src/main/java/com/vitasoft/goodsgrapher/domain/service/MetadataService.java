@@ -1,5 +1,6 @@
 package com.vitasoft.goodsgrapher.domain.service;
 
+import com.sun.xml.bind.v2.TODO;
 import com.vitasoft.goodsgrapher.application.request.DeleteMetadataRequest;
 import com.vitasoft.goodsgrapher.application.request.MetadataRequest;
 import com.vitasoft.goodsgrapher.domain.exception.metadata.DuplicationReserveIdException;
@@ -23,15 +24,22 @@ import com.vitasoft.goodsgrapher.domain.model.kipris.repository.WorkRepository;
 import java.io.IOException;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
+import java.util.Set;
+import java.util.TreeMap;
+import java.util.TreeSet;
 import java.util.stream.Collectors;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
+@Slf4j
 @Service
 @RequiredArgsConstructor
 @Transactional
@@ -50,15 +58,11 @@ public class MetadataService {
     private final CodeRepository codeRepository;
 
     public List<GetMetadataDto> getMetadataList() {
-        return modelInfoRepository.findAll().stream()
-                .map(GetMetadataDto::new)
-                .collect(Collectors.toList());
+        return modelInfoRepository.findAll().stream().map(GetMetadataDto::new).collect(Collectors.toList());
     }
 
     public List<GetMetadataDto> getSearchMetadata(String searchWord, String codeId) {
-        return modelInfoRepository.findAllByMetadata(codeId, searchWord == null ? "" : searchWord, searchWord, searchWord).stream()
-                .map(GetMetadataDto::new)
-                .collect(Collectors.toList());
+        return modelInfoRepository.findAllByMetadata(codeId, searchWord == null ? "" : searchWord, searchWord, searchWord).stream().map(GetMetadataDto::new).collect(Collectors.toList());
     }
 
     public List<GetMetadataDto> getImageSearchMetadata(List<String> images) {
@@ -85,9 +89,7 @@ public class MetadataService {
     public void cancelExcessReserveTime() {
         LocalDateTime now = LocalDateTime.now();
 
-        workRepository.findAllByStatus("1").stream()
-                .filter(work -> work.getRegDate().plusDays(2).isBefore(now))
-                .forEach(work -> cancelReserveMetadata(work.getWorkSeq()));
+        workRepository.findAllByStatus("1").stream().filter(work -> work.getRegDate().plusDays(2).isBefore(now)).forEach(work -> cancelReserveMetadata(work.getWorkSeq()));
     }
 
     public void reserveMetadata(String memberId, int modelSeq) {
@@ -106,16 +108,14 @@ public class MetadataService {
     }
 
     public void cancelReserveMetadata(int workSeq) {
-        Work work = workRepository.findById(workSeq)
-                .orElseThrow(() -> new WorkModelNotFoundException(workSeq));
+        Work work = workRepository.findById(workSeq).orElseThrow(() -> new WorkModelNotFoundException(workSeq));
 
         work.setStatus("0");
     }
 
     @Transactional(readOnly = true)
     public GetMetadataDetailDto getMetadataDetail(int modelSeq) {
-        ModelInfo modelInfo = modelInfoRepository.findById(modelSeq)
-                .orElseThrow(() -> new ModelInfoNotFoundException(modelSeq));
+        ModelInfo modelInfo = modelInfoRepository.findById(modelSeq).orElseThrow(() -> new ModelInfoNotFoundException(modelSeq));
 
         DesignInfo designInfo = designInfoRepository.findByRegistrationNumber(modelInfo.getRegistrationNumber());
 
@@ -124,14 +124,11 @@ public class MetadataService {
 
     @Transactional(readOnly = true)
     public List<GetModelImageDto> getMetadataImages(int modelSeq, String memberId) {
-        return modelImagesRepository.findByModelSeqAndIsDeletedAndRegId(modelSeq, "0", memberId).stream()
-                .map(GetModelImageDto::new)
-                .collect(Collectors.toList());
+        return modelImagesRepository.findByModelSeqAndIsDeletedAndRegId(modelSeq, "0", memberId).stream().map(GetModelImageDto::new).collect(Collectors.toList());
     }
 
     public void uploadMetadata(String memberId, MetadataRequest metadataRequest) {
-        int displayOrder = modelImagesRepository.findTopByModelSeqAndRegIdOrderByUploadSeqDesc(metadataRequest.getModelSeq(), memberId)
-                .orElseGet(ModelImages::new).getDisplayOrder();
+        int displayOrder = modelImagesRepository.findTopByModelSeqAndRegIdOrderByUploadSeqDesc(metadataRequest.getModelSeq(), memberId).orElseGet(ModelImages::new).getDisplayOrder();
 
         ModelInfo modelInfo = modelInfoRepository.findById(metadataRequest.getModelSeq()).orElseThrow(() -> new ModelInfoNotFoundException(metadataRequest.getModelSeq()));
 
@@ -146,12 +143,33 @@ public class MetadataService {
     }
 
     private void uploadMetadataImages(String memberId, MetadataRequest metadataRequest, ModelInfo modelInfo, int displayOrder, DesignInfo designInfo) {
-        if (metadataRequest.getImages() != null) {
-            for (MultipartFile image : metadataRequest.getImages()) {
-                ModelImages modelImages = imageService.uploadMetadataImage(memberId, modelInfo, image, ++displayOrder, designInfo);
-                modelImagesRepository.save(modelImages);
+        List<ModelImages> imgArray = new ArrayList<>();
+
+        Map<Integer, List<MultipartFile>> imageGroups = getImageGroups(metadataRequest.getImages());
+
+        imageGroups.forEach((key, value) -> {
+            List<MultipartFile> subImages = imageGroups.get(key);
+            for (int i = 0; i < subImages.size(); i++) {
+                ModelImages modelImages = imageService.uploadMetadataImage(memberId, modelInfo, subImages.get(i), i + 1, designInfo);
+                imgArray.add(modelImages);
             }
-        }
+        });
+        modelImagesRepository.saveAll(imgArray);
+    }
+
+    private Map<Integer, List<MultipartFile>> getImageGroups(List<MultipartFile> images) {
+        Map<Integer, List<MultipartFile>> groups = new TreeMap<>();
+
+        images.forEach(image -> {
+            int lastIndex = Objects.requireNonNull(image.getOriginalFilename()).lastIndexOf("_");
+            int indexNumber = Integer.parseInt(image.getOriginalFilename().substring(lastIndex + 1, lastIndex + 2));
+
+            groups.putIfAbsent(indexNumber, new ArrayList<>());
+            List<MultipartFile> subImages = groups.get(indexNumber);
+            subImages.add(image);
+        });
+
+        return groups;
     }
 
 //    public void updateMetadata(String memberId, MetadataRequest metadataRequest) {
@@ -168,8 +186,7 @@ public class MetadataService {
 
     public void deleteMetadata(DeleteMetadataRequest deleteMetadataRequest) throws IOException {
         for (int uploadSeq : deleteMetadataRequest.getUploadSeqList()) {
-            ModelImages modelImages = modelImagesRepository.findById(uploadSeq)
-                    .orElseThrow(ArithmeticException::new);
+            ModelImages modelImages = modelImagesRepository.findById(uploadSeq).orElseThrow(ArithmeticException::new);
             modelImages.setIsDeleted("1");
             imageService.deleteMetadataImage(modelImages.getFileName());
         }
@@ -188,15 +205,11 @@ public class MetadataService {
 
     @Transactional(readOnly = true)
     public List<GetCategoryDto> getHighCategory() {
-        return codeRepository.findAllByHighCodeIdAndCodeGroup("TOPCODE", "GOODS").stream()
-                .map(GetCategoryDto::new)
-                .collect(Collectors.toList());
+        return codeRepository.findAllByHighCodeIdAndCodeGroup("TOPCODE", "GOODS").stream().map(GetCategoryDto::new).collect(Collectors.toList());
     }
 
     @Transactional(readOnly = true)
     public List<GetCategoryDto> getDownCategory(String codeId) {
-        return codeRepository.findAllByHighCodeId(codeId).stream()
-                .map(GetCategoryDto::new)
-                .collect(Collectors.toList());
+        return codeRepository.findAllByHighCodeId(codeId).stream().map(GetCategoryDto::new).collect(Collectors.toList());
     }
 }
