@@ -146,7 +146,7 @@ public class MetadataService {
         Map<Integer, List<MultipartFile>> imageGroups = getImageGroups(images);
         imageGroups.forEach((key, subImages) -> {
             for (int i = 0; i < subImages.size(); i++) {
-                ModelImage modelImage = imageService.uploadMetadataImage(memberId, modelInfo, subImages.get(i), i + 1, designInfo, jsonObjectList.get(i));
+                ModelImage modelImage = imageService.uploadMetadataImage(memberId, modelInfo, subImages.get(i), i + 1, designInfo, jsonObjectList.get((key * 10) + i));
                 imgArray.add(modelImage);
             }
         });
