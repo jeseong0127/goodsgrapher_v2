@@ -3,12 +3,13 @@ package com.vitasoft.goodsgrapher.domain.service;
 import com.vitasoft.goodsgrapher.domain.exception.image.CannotUploadImageException;
 import com.vitasoft.goodsgrapher.domain.exception.image.CannotViewImageException;
 import com.vitasoft.goodsgrapher.domain.exception.image.ImageNotFoundException;
-import com.vitasoft.goodsgrapher.domain.model.kipris.entity.ArticleFile;
+import com.vitasoft.goodsgrapher.domain.model.kipris.entity.DesignImage;
 import com.vitasoft.goodsgrapher.domain.model.kipris.entity.DesignInfo;
-import com.vitasoft.goodsgrapher.domain.model.kipris.entity.ModelImages;
+import com.vitasoft.goodsgrapher.domain.model.kipris.entity.ModelImage;
 import com.vitasoft.goodsgrapher.domain.model.kipris.entity.ModelInfo;
-import com.vitasoft.goodsgrapher.domain.model.kipris.repository.ArticleFileRepository;
-import com.vitasoft.goodsgrapher.domain.model.kipris.repository.ModelImagesRepository;
+import com.vitasoft.goodsgrapher.domain.model.kipris.repository.DesignImageRepository;
+import com.vitasoft.goodsgrapher.domain.model.kipris.repository.DesignInfoRepository;
+import com.vitasoft.goodsgrapher.domain.model.kipris.repository.ModelImageRepository;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;
@@ -20,6 +21,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.FilenameUtils;
+import org.json.simple.JSONObject;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -39,13 +41,12 @@ public class ImageService {
     @Value("${image.upload-path.fail}")
     private String failPath;
 
-    private final ArticleFileRepository articleFileRepository;
-    private final ModelImagesRepository modelImagesRepository;
+    private final ModelImageRepository modelImageRepository;
+    private final DesignImageRepository designImageRepository;
 
-    public ModelImages uploadMetadataImage(String memberId, ModelInfo modelInfo, MultipartFile file, int displayOrder, DesignInfo designInfo) {
+    public ModelImage uploadMetadataImage(String memberId, ModelInfo modelInfo, MultipartFile file, int displayOrder, DesignInfo designInfo, JSONObject jsonObject) {
         int lastIndex = Objects.requireNonNull(file.getOriginalFilename()).lastIndexOf("_");
-        String viewPoint = file.getOriginalFilename().substring( lastIndex + 1, lastIndex + 2 );
-        String realPath = file.getOriginalFilename().substring( 0 ,lastIndex);
+        String viewPoint = file.getOriginalFilename().substring(lastIndex + 1, lastIndex + 2);
         String brandCode = formatLastRightHolderName(designInfo.getLastRightHolderName());
         String fileType = "." + FilenameUtils.getExtension(file.getOriginalFilename());
         String fileName = formatFileName(memberId, modelInfo, designInfo, displayOrder, fileType, brandCode, viewPoint);
@@ -53,21 +54,20 @@ public class ImageService {
 
         uploadImage(inspectPath, file, fileName);
 
-        return new ModelImages(memberId, modelInfo, fileName, fileSize, fileType, displayOrder, brandCode, realPath, viewPoint);
+        return new ModelImage(memberId, modelInfo, fileName, fileSize, fileType, displayOrder, brandCode, viewPoint, jsonObject);
     }
 
     private String formatFileName(String memberId, ModelInfo modelInfo, DesignInfo designInfo, int displayOrder, String fileType, String brandCode, String viewPoint) {
         String formatMetaSeq = String.format("%06d", modelInfo.getModelSeq());
         String[] folderNameParts = {memberId, brandCode, designInfo.getArticleName(), modelInfo.getModelName(), modelInfo.getRegistrationNumber().replaceAll("/", ""), designInfo.getClassCode().contains("|") ? designInfo.getClassCode().split("\\|")[0] : designInfo.getClassCode()};
         String folderName = designInfo.getClassCode().contains("|") ? designInfo.getClassCode().split("\\|")[0] + "/" + String.join("_", folderNameParts) : designInfo.getClassCode() + "/" + String.join("_", folderNameParts);
-        String fileName =  "/VS_2023_" + formatMetaSeq + "_" + viewPoint + "_0_" + displayOrder + fileType;
+        String fileName = "/VS_2023_" + formatMetaSeq + "_" + viewPoint + "_0_" + displayOrder + fileType;
         return folderName + fileName;
     }
 
     private String formatLastRightHolderName(String lastRightHolderName) {
         String[] brandNameList = {"애드크런치", "세라젬", "다이슨", "에이치피", "라네즈", "엘지전자", "현대모비스", "미쟝센", "슈피겐", "설화수", "삼성전자", "쓰리쎄븐"};
         String[] brandCodeList = {"ACR", "CRG", "DY", "HP", "LA", "LG", "MOB", "MSC", "SG", "SH", "SS", "TS"};
-
         int index = 0;
         String brandCode = "ZZ";
 
@@ -78,7 +78,6 @@ public class ImageService {
             }
             index++;
         }
-
         return brandCode;
     }
 
@@ -93,14 +92,16 @@ public class ImageService {
         }
     }
 
-    public byte[] viewImage(int imageId) {
-        ArticleFile articleFile = articleFileRepository.findById(imageId).orElseThrow(() -> new ImageNotFoundException(imageId));
-        return this.viewImage(new File(imagePath, articleFile.getFileName()));
+    public byte[] viewImage(int designImgSeq) {
+//        ArticleFile articleFile = articleFileRepository.findById(imageId).orElseThrow(() -> new ImageNotFoundException(imageId));
+//        return this.viewImage(new File(imagePath, designImage.getImgPath()));
+        DesignImage designImage = designImageRepository.findById(designImgSeq).orElseThrow(() -> new ImageNotFoundException(designImgSeq));
+        return this.viewImage(new File(designImage.getImgPath()));
     }
 
     public byte[] viewInspectImage(int uploadSeq) {
-        ModelImages modelImages = modelImagesRepository.findById(uploadSeq).orElseThrow(() -> new ImageNotFoundException(uploadSeq));
-        return this.viewImage(new File((modelImages.getInspectPf() == 'F' ? failPath : inspectPath), modelImages.getFileName()));
+        ModelImage modelImage = modelImageRepository.findById(uploadSeq).orElseThrow(() -> new ImageNotFoundException(uploadSeq));
+        return this.viewImage(new File((modelImage.getInspectPf() == 'F' ? failPath : inspectPath), modelImage.getFileName()));
     }
 
     private byte[] viewImage(File image) {

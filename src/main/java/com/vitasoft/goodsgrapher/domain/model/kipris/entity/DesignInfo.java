@@ -28,7 +28,7 @@ public class DesignInfo {
 
     @OneToMany
     @JoinColumn(name = "designSeq")
-    private List<DesignImages> designImages = new ArrayList<>();
+    private List<DesignImage> designImages = new ArrayList<>();
 
     private String registrationNumber;
 

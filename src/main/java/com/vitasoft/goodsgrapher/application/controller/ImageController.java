@@ -20,12 +20,12 @@ public class ImageController {
     private final ImageService imageService;
 
     @ApiOperation(value = "이미지 조회하기")
-    @GetMapping(value = "/{imageId}", produces = MediaType.IMAGE_JPEG_VALUE)
+    @GetMapping(value = "/{designImgSeq}", produces = MediaType.IMAGE_JPEG_VALUE)
     @ResponseStatus(HttpStatus.OK)
     public byte[] viewImage(
-            @PathVariable int imageId
+            @PathVariable int designImgSeq
     ) {
-        return imageService.viewImage(imageId);
+        return imageService.viewImage(designImgSeq);
     }
 
     @ApiOperation(value = "검색 대표 이미지 조회하기")

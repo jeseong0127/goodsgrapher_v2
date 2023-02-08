@@ -16,7 +16,7 @@ import org.hibernate.annotations.DynamicUpdate;
 @Data
 @DynamicUpdate
 @RequiredArgsConstructor
-public class DesignImages {
+public class DesignImage {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int designImgSeq;
@@ -32,4 +32,14 @@ public class DesignImages {
     private String updId;
 
     private LocalDateTime updDate;
+
+    public DesignImage(int designImgSeq, String imageName, String imgUrl, String imgPath, int imgNumber, String updId, LocalDateTime updDate) {
+        this.designImgSeq = designImgSeq;
+        this.imageName = imageName;
+        this.imgUrl = imgUrl;
+        this.imgPath = imgPath;
+        this.imgNumber = imgNumber;
+        this.updId = updId;
+        this.updDate = updDate;
+    }
 }
