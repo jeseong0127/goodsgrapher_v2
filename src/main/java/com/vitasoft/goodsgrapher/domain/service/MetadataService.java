@@ -192,11 +192,11 @@ public class MetadataService {
         ModelInfo modelInfo = modelInfoRepository.findById(modelSeq).orElseThrow(() -> new ModelInfoNotFoundException(modelSeq));
 
         List<ModelImage> modelImages = modelImageRepository.findAllByModelSeqAndRegId(modelInfo.getModelSeq(), memberId);
-        modelImages.forEach(images -> images.setIsDeleted("1"));
+        modelImageRepository.deleteAll(modelImages);
 
-        Work work = new Work(memberId, modelSeq);
-        work.cancel();
-        workRepository.save(work);
+//        Work work = new Work(memberId, modelSeq);
+//        work.cancel();
+//        workRepository.save(work);
     }
 
     @Transactional(readOnly = true)

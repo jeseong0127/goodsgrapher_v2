@@ -119,6 +119,7 @@ public class MetadataController {
         for (int i = 0; i < metadataRequest.getJson().size(); i++) {
             jsonObjectList.add(metadataService.convertJson(metadataRequest.getJson().get(i)));
         }
+        metadataService.deleteWorkedMetadata(metadataRequest.getModelSeq(), member.getMemberId());
         metadataService.uploadMetadata(member.getMemberId(), metadataRequest.getModelSeq(), jsonObjectList , images);
     }
 
