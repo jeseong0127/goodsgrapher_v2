@@ -89,7 +89,7 @@ public class MetadataService {
     public void cancelExcessReserveTime() {
         LocalDateTime now = LocalDateTime.now();
 
-        workRepository.findAllByStatus("1").stream().filter(work -> work.getRegDate().plusDays(2).isBefore(now)).forEach(work -> cancelReserveMetadata(work.getWorkSeq()));
+        workRepository.findAllByStatus("1").stream().filter(work -> work.getRegDate().plusDays(2).isBefore(now)).forEach(work -> cancelReserveMetadata(work.getWorkSeq(), work.getRegId()));
     }
 
     public void reserveMetadata(String memberId, int modelSeq) {
@@ -107,8 +107,8 @@ public class MetadataService {
         workRepository.save(work);
     }
 
-    public void cancelReserveMetadata(int workSeq) {
-        Work work = workRepository.findById(workSeq).orElseThrow(() -> new WorkModelNotFoundException(workSeq));
+    public void cancelReserveMetadata(int modelSeq, String memberId) {
+        Work work = workRepository.findTopByModelSeqAndRegIdOrderByRegDate(modelSeq, memberId);
 
         work.setStatus("0");
     }

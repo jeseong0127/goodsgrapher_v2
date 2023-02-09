@@ -70,12 +70,13 @@ public class MetadataController {
     }
 
     @ApiOperation("메타데이터 예약 취소하기")
-    @DeleteMapping("/reservation/{workSeq}")
+    @DeleteMapping("/reservation/{modelSeq}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void cancelReserveMetadata(
-            @PathVariable int workSeq
+            @MemberInfo AuthenticatedMember member,
+            @PathVariable int modelSeq
     ) {
-        metadataService.cancelReserveMetadata(workSeq);
+        metadataService.cancelReserveMetadata(modelSeq, member.getMemberId());
     }
 
     @ApiOperation("메타데이터 작업보기")

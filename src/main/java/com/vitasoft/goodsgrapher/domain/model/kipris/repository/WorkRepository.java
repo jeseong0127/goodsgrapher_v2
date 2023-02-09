@@ -13,10 +13,14 @@ import org.springframework.stereotype.Repository;
 public interface WorkRepository extends JpaRepository<Work, Integer> {
     Work findTopByModelSeqAndRegIdOrderByRegDateDesc(int modelSeq, String memberId);
 
+    Work findTopByModelSeqAndRegIdOrderByRegDate(int modelSeq, String memberId);
+
     int countByRegIdAndStatus(String memberId, String status);
 
     List<Work> findAllByStatus(String status);
 
     @Query("select w from Work w where w.regId = :memberId group by w.modelSeq")
     List<Work> findAllByMetadata(@Param("memberId") String memberId);
+
+    List<Work> findAllByRegIdAndStatus(String memberId, String status);
 }

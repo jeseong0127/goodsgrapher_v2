@@ -16,6 +16,6 @@ public class MetadataRequest {
     private int modelSeq;
     //    @Size(max = 62, message = "사진은 최소 62장까지 첨부할 수 있습니다.")
 //    private List<MultipartFile> images;
-
+    @NotNull
     private List<String> json;
 }

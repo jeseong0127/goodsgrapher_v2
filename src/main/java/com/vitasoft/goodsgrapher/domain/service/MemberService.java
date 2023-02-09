@@ -30,7 +30,7 @@ public class MemberService {
     @Transactional(readOnly = true)
     public List<GetMetadataDto> getMetadata(String memberId) {
 
-        List<Work> workList = workRepository.findAllByMetadata(memberId);
+        List<Work> workList = workRepository.findAllByRegIdAndStatus(memberId, "1");
 
         List<ModelInfo> modelInfoList = new ArrayList<>();
 
