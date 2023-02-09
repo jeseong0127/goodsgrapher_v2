@@ -109,7 +109,8 @@ public class MetadataService {
 
     public void cancelReserveMetadata(int modelSeq, String memberId) {
         Work work = workRepository.findTopByModelSeqAndRegIdOrderByRegDate(modelSeq, memberId);
-
+        List<ModelImage> modelImage = modelImageRepository.findAllByModelSeqAndRegId(modelSeq, memberId);
+        modelImage.forEach(image -> image.setIsDeleted("1"));
         work.setStatus("0");
     }
 
@@ -211,12 +212,10 @@ public class MetadataService {
 
     public JSONObject convertJson(String json) {
         JSONParser parser = new JSONParser();
-        JSONObject jsonObject = new JSONObject();
         Object obj;
         try {
             obj = parser.parse(json);
-            jsonObject = (JSONObject) obj;
-            return jsonObject;
+            return (JSONObject) obj;
         } catch (ParseException e) {
             throw new RuntimeException(e);
         }

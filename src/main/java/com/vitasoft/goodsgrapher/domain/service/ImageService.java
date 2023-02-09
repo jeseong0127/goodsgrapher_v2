@@ -70,7 +70,9 @@ public class ImageService {
         String[] brandCodeList = {"ACR", "CRG", "DY", "HP", "LA", "LG", "MOB", "MSC", "SG", "SH", "SS", "TS"};
         int index = 0;
         String brandCode = "ZZ";
-
+        if(lastRightHolderName == null) {
+            return brandCode;
+        }
         for (String brandName : brandNameList) {
             if (lastRightHolderName.contains(brandName)) {
                 brandCode = brandCodeList[index];
