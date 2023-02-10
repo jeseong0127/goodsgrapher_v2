@@ -124,9 +124,4 @@ public class ImageService {
     public byte[] viewThumbnailImage(String imagePath) {
         return this.viewImage(new File(this.imagePath, imagePath));
     }
-
-    public void deleteMetadataImage(String filename) throws IOException {
-        File file = new File(inspectPath + File.separator + filename);
-        FileUtils.forceDelete(file);
-    }
 }

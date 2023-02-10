@@ -12,6 +12,8 @@ import org.springframework.stereotype.Repository;
 public interface ModelImageRepository extends JpaRepository<ModelImage, Integer> {
     List<ModelImage> findAllByModelSeqAndRegId(int modelSeq, String memberId);
 
+    ModelImage findByFileName(String fileName);
+
     List<ModelImage> findByModelSeqAndIsDeletedAndRegId(int modelSeq, String s, String memberId);
 
     Optional<ModelImage> findTopByModelSeqAndRegIdOrderByUploadSeqDesc(int modelSeq, String memberId);

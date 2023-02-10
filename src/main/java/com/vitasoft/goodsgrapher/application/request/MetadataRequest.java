@@ -18,4 +18,6 @@ public class MetadataRequest {
 //    private List<MultipartFile> images;
     @NotNull
     private List<String> json;
+
+//    private List<MultipartFile> images;
 }

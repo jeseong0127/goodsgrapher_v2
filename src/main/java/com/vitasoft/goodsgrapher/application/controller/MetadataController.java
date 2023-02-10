@@ -12,17 +12,12 @@ import com.vitasoft.goodsgrapher.domain.service.MetadataService;
 import io.swagger.annotations.ApiOperation;
 
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.List;
 import javax.validation.Valid;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.json.simple.JSONObject;
-import org.json.simple.JSONValue;
-import org.json.simple.parser.JSONParser;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
@@ -108,31 +103,17 @@ public class MetadataController {
         return new ModelImageResponse(metadataService.getMetadataImages(modelSeq, member.getMemberId()));
     }
 
-    @ApiOperation("메타데이터 작업하기")
-    @PostMapping(consumes = {MediaType.MULTIPART_FORM_DATA_VALUE, MediaType.APPLICATION_JSON_VALUE, "application/json"})
+    //    @PostMapping(consumes = {"multipart/form-data", "application/json" /*MediaType.MULTIPART_FORM_DATA_VALUE, MediaType.APPLICATION_JSON_VALUE*/})
+    @PostMapping()
     @ResponseStatus(HttpStatus.CREATED)
+    @ApiOperation("메타데이터 작업하기")
     public void uploadMetadata(
             @MemberInfo AuthenticatedMember member,
             @Valid @ModelAttribute MetadataRequest metadataRequest,
             @RequestPart List<MultipartFile> images
-    ) {
-        List<JSONObject> jsonObjectList = new ArrayList<>();
-        for (int i = 0; i < metadataRequest.getJson().size(); i++) {
-            jsonObjectList.add(metadataService.convertJson(metadataRequest.getJson().get(i)));
-        }
-        metadataService.deleteWorkedMetadata(metadataRequest.getModelSeq(), member.getMemberId());
-        metadataService.uploadMetadata(member.getMemberId(), metadataRequest.getModelSeq(), jsonObjectList , images);
+    ){
+        metadataService.uploadMetadata(member.getMemberId(), metadataRequest.getModelSeq(), metadataRequest.getJson(), images);
     }
-
-//    @ApiOperation("메타데이터 수정하기")
-//    @PutMapping
-//    @ResponseStatus(HttpStatus.OK)
-//    public void updateMetadata(
-//            @MemberInfo AuthenticatedMember member,
-//            @Valid @ModelAttribute MetadataRequest metadataRequest
-//    ) {
-//        metadataService.updateMetadata(member.getMemberId(), metadataRequest);
-//    }
 
     @ApiOperation("메타데이터 삭제하기")
     @DeleteMapping
