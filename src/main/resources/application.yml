@@ -55,9 +55,10 @@ app:
 
 image:
   upload-path:
-    metadata: ${METADATA_UPLOAD_PATH}
-    inspect: ${INSPECT_UPLOAD_PATH}
-    fail: ${FAIL_UPLOAD_PATH}
+    designImages: ${DESIGN_IMAGES}
+    designThumbnailImage: ${DESIGN_THUMBNAIL_IMAGE}
+    modelImagesGoods: ${MODEL_IMAGES_GOODS}
+    modelImagesWorker: ${MODEL_IMAGES_WORKER}
 
 logging:
   level:

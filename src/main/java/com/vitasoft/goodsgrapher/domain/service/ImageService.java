@@ -32,14 +32,17 @@ import org.springframework.web.multipart.MultipartFile;
 @RequiredArgsConstructor
 @Transactional
 public class ImageService {
-    @Value("${image.upload-path.metadata}")
-    private String imagePath;
+    @Value("${image.upload-path.designImages}")
+    private String designImagesPath;
 
-    @Value("${image.upload-path.inspect}")
-    private String inspectPath;
+    @Value("${image.upload-path.designThumbnailImage}")
+    private String designThumbnailImagePath;
 
-    @Value("${image.upload-path.fail}")
-    private String failPath;
+    @Value("${image.upload-path.modelImagesGoods}")
+    private String modelImagesGoodsPath;
+
+    @Value("${image.upload-path.modelImagesWorker}")
+    private String modelImagesWorkerPath;
 
     private final ModelImageRepository modelImageRepository;
     private final DesignImageRepository designImageRepository;
@@ -52,7 +55,7 @@ public class ImageService {
         String fileName = formatFileName(memberId, modelInfo, designInfo, displayOrder, fileType, brandCode, viewPoint);
         String fileSize = String.valueOf(file.getSize());
 
-        uploadImage(inspectPath, file, fileName);
+        uploadImage(modelImagesWorkerPath, file, fileName);
 
         return new ModelImage(memberId, modelInfo, fileName, fileSize, fileType, displayOrder, brandCode, viewPoint, jsonObject);
     }
@@ -98,12 +101,12 @@ public class ImageService {
 //        ArticleFile articleFile = articleFileRepository.findById(imageId).orElseThrow(() -> new ImageNotFoundException(imageId));
 //        return this.viewImage(new File(imagePath, designImage.getImgPath()));
         DesignImage designImage = designImageRepository.findById(designImgSeq).orElseThrow(() -> new ImageNotFoundException(designImgSeq));
-        return this.viewImage(new File(designImage.getImgPath()));
+        return this.viewImage(new File(modelImagesWorkerPath,designImage.getImgPath()));
     }
 
     public byte[] viewInspectImage(int uploadSeq) {
         ModelImage modelImage = modelImageRepository.findById(uploadSeq).orElseThrow(() -> new ImageNotFoundException(uploadSeq));
-        return this.viewImage(new File((modelImage.getInspectPf() == 'F' ? failPath : inspectPath), modelImage.getFileName()));
+        return this.viewImage(new File((modelImagesWorkerPath), modelImage.getFileName()));
     }
 
     private byte[] viewImage(File image) {
@@ -122,6 +125,6 @@ public class ImageService {
     }
 
     public byte[] viewThumbnailImage(String imagePath) {
-        return this.viewImage(new File(this.imagePath, imagePath));
+        return this.viewImage(new File( imagePath));
     }
 }

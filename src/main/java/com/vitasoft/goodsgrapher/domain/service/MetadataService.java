@@ -59,8 +59,8 @@ public class MetadataService {
 
     private final CodeRepository codeRepository;
 
-    @Value("${image.upload-path.inspect}")
-    private String inspectPath;
+    @Value("${image.upload-path.modelImagesWorker}")
+    private String modelImagesWorkerPath;
 
     private final JSONParser parser = new JSONParser();
 
@@ -73,18 +73,22 @@ public class MetadataService {
     }
 
     public List<GetMetadataDto> getImageSearchMetadata(List<String> images) {
+        cancelExcessReserveTime();
+
         List<GetMetadataDto> metadataDtos = new ArrayList<>();
 
         List<ModelInfo> modelInfoList = modelInfoRepository.findAllByModelNameIsNotNullAndUseYn('Y');
 
-        cancelExcessReserveTime();
 
         for (String pathImage : images) {
+            String pathName = getPathName(pathImage);
             modelInfoList.forEach(modelInfo -> {
-                if (modelInfo.getPathImgGoods() != null && modelInfo.getPathImgGoods().contains(pathImage)) {
-                    metadataDtos.add(new GetMetadataDto(modelInfo, "photo"));
-                } else {
-                    if (modelInfo.getDesignInfo().getImgPath() != null && modelInfo.getDesignInfo().getImgPath().contains(pathImage))
+                if (modelInfo.getPathImgGoods() != null) {
+                    if (modelInfo.getRegistrationNumber().equals(pathName)) {
+                        metadataDtos.add(new GetMetadataDto(modelInfo, "photo"));
+                    }
+                } else if (modelInfo.getDesignInfo().getImgPath() != null) {
+                    if (modelInfo.getDesignInfo().getRegistrationNumber().equals(pathName))
                         metadataDtos.add(new GetMetadataDto(modelInfo, "drawing", modelInfo.getDesignInfo().getImgPath()));
                 }
             });
@@ -93,10 +97,20 @@ public class MetadataService {
         return metadataDtos;
     }
 
+    private String getPathName(String pathImage) {
+        String pathName = pathImage.substring(pathImage.indexOf("_") + 1, pathImage.lastIndexOf("."));
+        if (pathName.startsWith("DM")) {
+            pathName = pathName.replace("DM", "DM/");
+        }
+        return pathName;
+    }
+
     public void cancelExcessReserveTime() {
         LocalDateTime now = LocalDateTime.now();
 
-        workRepository.findAllByStatus("1").stream().filter(work -> work.getRegDate().plusDays(2).isBefore(now)).forEach(work -> cancelReserveMetadata(work.getWorkSeq(), work.getRegId()));
+        workRepository.findAllByStatus("1").stream()
+                .filter(work -> now.minusDays(2).isAfter(work.getRegDate()))
+                .forEach(work -> cancelReserveMetadata(work.getWorkSeq(), work.getRegId()));
     }
 
     public void reserveMetadata(String memberId, int modelSeq) {
@@ -181,7 +195,7 @@ public class MetadataService {
             for (int i = 0; i < subImages.size(); i++) {
                 ModelImage modelImage = imageService.uploadMetadataImage(memberId, modelInfo, subImages.get(i), i + 1, designInfo, jsonObjectList.get((key * 10) + i));
                 imgArray.add(modelImage);
-                files.add(new File(inspectPath, modelImage.getFileName()));
+                files.add(new File(modelImagesWorkerPath, modelImage.getFileName()));
             }
         });
         modelImageRepository.saveAll(imgArray);
@@ -209,7 +223,7 @@ public class MetadataService {
             ModelImage modelImage = modelImageRepository.findById(uploadSeq).orElseThrow(ArithmeticException::new);
             modelImage.setIsDeleted("1");
 
-            FileUtils.forceDelete(new File(inspectPath, modelImage.getFileName()));
+            FileUtils.forceDelete(new File(modelImagesWorkerPath, modelImage.getFileName()));
         }
     }
 
@@ -217,7 +231,7 @@ public class MetadataService {
         ModelInfo modelInfo = modelInfoRepository.findById(modelSeq).orElseThrow(() -> new ModelInfoNotFoundException(modelSeq));
 
         List<ModelImage> modelImages = modelImageRepository.findAllByModelSeqAndRegId(modelInfo.getModelSeq(), memberId);
-        List<File> deletedFiles = modelImages.stream().map(image -> new File(inspectPath, image.getFileName())).collect(Collectors.toList());
+        List<File> deletedFiles = modelImages.stream().map(image -> new File(modelImagesWorkerPath, image.getFileName())).collect(Collectors.toList());
         modelImageRepository.deleteAllInBatch(modelImages);
 
         return deletedFiles;
