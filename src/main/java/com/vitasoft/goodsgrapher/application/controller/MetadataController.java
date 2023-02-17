@@ -43,12 +43,13 @@ public class MetadataController {
     public MetadataResponse getMetadata(
             @RequestParam(required = false) String word,
             @RequestParam(required = false) List<String> images,
+            @RequestParam(required = false) List<String> confidence,
             @RequestParam(required = false) String codeId
     ) {
         if (word != null || codeId != null) {
             return new MetadataResponse(metadataService.getSearchMetadata(word, codeId));
         } else if (images != null) {
-            return new MetadataResponse(metadataService.getImageSearchMetadata(images));
+            return new MetadataResponse(metadataService.getImageSearchMetadata(images, confidence));
         } else {
             return new MetadataResponse(metadataService.getMetadataList());
         }

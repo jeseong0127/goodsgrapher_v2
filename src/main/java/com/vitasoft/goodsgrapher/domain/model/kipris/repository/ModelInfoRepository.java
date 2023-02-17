@@ -1,5 +1,6 @@
 package com.vitasoft.goodsgrapher.domain.model.kipris.repository;
 
+import com.vitasoft.goodsgrapher.domain.model.kipris.entity.DesignInfo;
 import com.vitasoft.goodsgrapher.domain.model.kipris.entity.ModelInfo;
 
 import java.util.Arrays;
@@ -27,4 +28,5 @@ public interface ModelInfoRepository extends JpaRepository<ModelInfo, Integer> {
     List<ModelInfo> findAllByModelNameIsNotNullAndUseYn(char useYn);
 
     Optional<ModelInfo> findByModelSeqAndRegId(int metaSeq, String memberId);
+
 }

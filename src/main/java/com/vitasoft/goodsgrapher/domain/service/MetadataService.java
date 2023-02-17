@@ -72,24 +72,29 @@ public class MetadataService {
         return modelInfoRepository.findAllByMetadata(codeId, searchWord == null ? "" : searchWord, searchWord, searchWord).stream().map(GetMetadataDto::new).collect(Collectors.toList());
     }
 
-    public List<GetMetadataDto> getImageSearchMetadata(List<String> images) {
+    public List<GetMetadataDto> getImageSearchMetadata(List<String> images, List<String> confidence) {
         cancelExcessReserveTime();
 
         List<GetMetadataDto> metadataDtos = new ArrayList<>();
 
         List<ModelInfo> modelInfoList = modelInfoRepository.findAllByModelNameIsNotNullAndUseYn('Y');
 
+        Map<String, String> keyValueMap = new TreeMap<>();
+        for (int i = 0; i < images.size(); i++) {
+            keyValueMap.put(images.get(i), confidence.get(i));
+        }
 
         for (String pathImage : images) {
             String pathName = getPathName(pathImage);
             modelInfoList.forEach(modelInfo -> {
-                if (modelInfo.getPathImgGoods() != null) {
+                String imgPath = designInfoRepository.findAllByRegistrationNumber(pathName);
+                if (modelInfo.getPathImgGoods() != null && !modelInfo.getPathImgGoods().equals("")) {
                     if (modelInfo.getRegistrationNumber().equals(pathName)) {
-                        metadataDtos.add(new GetMetadataDto(modelInfo, "photo"));
+                        metadataDtos.add(new GetMetadataDto(modelInfo, "photo", keyValueMap.get(pathImage)));
                     }
-                } else if (modelInfo.getDesignInfo().getImgPath() != null) {
-                    if (modelInfo.getDesignInfo().getRegistrationNumber().equals(pathName))
-                        metadataDtos.add(new GetMetadataDto(modelInfo, "drawing", modelInfo.getDesignInfo().getImgPath()));
+                } else if (imgPath != null && !imgPath.equals("")) {
+                    if (modelInfo.getRegistrationNumber().equals(pathName))
+                        metadataDtos.add(new GetMetadataDto(modelInfo, "drawing", imgPath, keyValueMap.get(pathImage)));
                 }
             });
         }
