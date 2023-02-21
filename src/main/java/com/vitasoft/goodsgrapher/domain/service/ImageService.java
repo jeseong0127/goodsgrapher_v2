@@ -104,7 +104,7 @@ public class ImageService {
         if (type == ImageType.DESIGN_IMAGE) {
             DesignImage designImage = designImageRepository.findById(seq)
                     .orElseThrow(() -> new ImageNotFoundException(seq));
-            image = new File(designImagesPath, designImage.getImgPath());
+            image = new File(designImage.getImgPath());
         } else {
             ModelImage modelImage = modelImageRepository.findById(seq)
                     .orElseThrow(() -> new ImageNotFoundException(seq));

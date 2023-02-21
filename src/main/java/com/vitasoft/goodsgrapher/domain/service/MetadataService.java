@@ -144,6 +144,13 @@ public class MetadataService {
         workRepository.save(work);
     }
 
+
+    public void finishMetadata(String memberId, int modelSeq){
+        Work work = workRepository.findTopByModelSeqAndRegIdOrderByRegDate(modelSeq, memberId);
+        work.setStatus("3");
+        workRepository.save(work);
+    }
+
     @Transactional(readOnly = true)
     public GetMetadataDetailDto getMetadataDetail(int modelSeq) {
         ModelInfo modelInfo = modelInfoRepository.findById(modelSeq).orElseThrow(() -> new ModelInfoNotFoundException(modelSeq));

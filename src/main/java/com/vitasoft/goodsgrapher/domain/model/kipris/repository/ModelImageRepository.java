@@ -17,4 +17,6 @@ public interface ModelImageRepository extends JpaRepository<ModelImage, Integer>
     List<ModelImage> findByModelSeqAndIsDeletedAndRegId(int modelSeq, String s, String memberId);
 
     Optional<ModelImage> findTopByModelSeqAndRegIdOrderByUploadSeqDesc(int modelSeq, String memberId);
+
+    int countAllByRegIdAndModelSeq(String memberId, int modelSeq);
 }

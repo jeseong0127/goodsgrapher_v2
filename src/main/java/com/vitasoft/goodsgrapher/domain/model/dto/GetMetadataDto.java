@@ -24,6 +24,7 @@ public class GetMetadataDto {
     private String registrationNumber;
     private String lastRightHolderName;
     private String confidence;
+    private int workedCount;
 
     public GetMetadataDto(ModelInfo modelInfo) {
         this.modelSeq = modelInfo.getModelSeq();
@@ -37,17 +38,9 @@ public class GetMetadataDto {
         this.designInfo = modelInfo.getDesignInfo();
     }
 
-    public GetMetadataDto(ModelInfo modelInfo, String type, DesignInfo designInfo, String confidence) {
-        this.modelSeq = modelInfo.getModelSeq();
-        this.productCategory = modelInfo.getProductCategory();
-        this.articleName = modelInfo.getArticleName();
-        this.modelName = modelInfo.getModelName();
-        this.companyName = modelInfo.getCompanyName();
-        this.regId = modelInfo.getRegId();
-        this.regDate = modelInfo.getRegDate();
-        this.pathImg = modelInfo.getPathImgGoods();
-        this.type = type;
-        this.confidence = confidence;
+    public GetMetadataDto(ModelInfo modelInfo, int workedCount) {
+        this(modelInfo);
+        this.workedCount = workedCount;
     }
 
     public GetMetadataDto(ModelInfo modelInfo, String type, GetImageSearchDto getImageSearchDto, String confidence) {

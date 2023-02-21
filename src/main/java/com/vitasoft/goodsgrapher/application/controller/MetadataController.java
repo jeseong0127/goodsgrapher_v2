@@ -65,6 +65,16 @@ public class MetadataController {
         metadataService.reserveMetadata(member.getMemberId(), modelSeq);
     }
 
+    @ApiOperation("메타데이터 작업 완료하기")
+    @PostMapping("/finish/{modelSeq}")
+    @ResponseStatus(HttpStatus.CREATED)
+    public void finishMetadata(
+            @MemberInfo AuthenticatedMember member,
+            @PathVariable int modelSeq
+    ) {
+        metadataService.finishMetadata(member.getMemberId(), modelSeq);
+    }
+
     @ApiOperation("메타데이터 예약 취소하기")
     @DeleteMapping("/reservation/{modelSeq}")
     @ResponseStatus(HttpStatus.NO_CONTENT)

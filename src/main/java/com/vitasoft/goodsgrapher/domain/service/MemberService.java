@@ -5,6 +5,7 @@ import com.vitasoft.goodsgrapher.domain.model.dto.GetMetadataDto;
 import com.vitasoft.goodsgrapher.domain.model.kipris.entity.ModelInfo;
 import com.vitasoft.goodsgrapher.domain.model.kipris.entity.Work;
 import com.vitasoft.goodsgrapher.domain.model.kipris.repository.AdjustmentRepository;
+import com.vitasoft.goodsgrapher.domain.model.kipris.repository.ModelImageRepository;
 import com.vitasoft.goodsgrapher.domain.model.kipris.repository.ModelInfoRepository;
 import com.vitasoft.goodsgrapher.domain.model.kipris.repository.WorkRepository;
 
@@ -27,6 +28,8 @@ public class MemberService {
 
     private final ModelInfoRepository modelInfoRepository;
 
+    private final ModelImageRepository modelImageRepository;
+
     @Transactional(readOnly = true)
     public List<GetMetadataDto> getMetadata(String memberId) {
 
@@ -39,7 +42,11 @@ public class MemberService {
         }
 
         return modelInfoList.stream()
-                .map(GetMetadataDto::new)
+                .map(dto -> {
+                            int workedCount = modelImageRepository.countAllByRegIdAndModelSeq(memberId, dto.getModelSeq());
+                            return new GetMetadataDto(dto, workedCount);
+                        }
+                )
                 .collect(Collectors.toList());
     }
 
