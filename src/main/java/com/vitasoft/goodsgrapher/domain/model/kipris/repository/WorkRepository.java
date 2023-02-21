@@ -2,6 +2,7 @@ package com.vitasoft.goodsgrapher.domain.model.kipris.repository;
 
 import com.vitasoft.goodsgrapher.domain.model.kipris.entity.Work;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -23,4 +24,6 @@ public interface WorkRepository extends JpaRepository<Work, Integer> {
     List<Work> findAllByMetadata(@Param("memberId") String memberId);
 
     List<Work> findAllByRegIdAndStatus(String memberId, String status);
+
+    Work findByRegIdAndModelSeqAndStatus(String memberId, int modelSeq, String status);
 }

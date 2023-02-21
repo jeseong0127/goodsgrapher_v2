@@ -9,6 +9,7 @@ import com.vitasoft.goodsgrapher.domain.model.kipris.repository.ModelImageReposi
 import com.vitasoft.goodsgrapher.domain.model.kipris.repository.ModelInfoRepository;
 import com.vitasoft.goodsgrapher.domain.model.kipris.repository.WorkRepository;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -44,7 +45,8 @@ public class MemberService {
         return modelInfoList.stream()
                 .map(dto -> {
                             int workedCount = modelImageRepository.countAllByRegIdAndModelSeq(memberId, dto.getModelSeq());
-                            return new GetMetadataDto(dto, workedCount);
+                    Work work = workRepository.findByRegIdAndModelSeqAndStatus(memberId, dto.getModelSeq(), "1");
+                            return new GetMetadataDto(dto, workedCount, work.getRegDate());
                         }
                 )
                 .collect(Collectors.toList());
