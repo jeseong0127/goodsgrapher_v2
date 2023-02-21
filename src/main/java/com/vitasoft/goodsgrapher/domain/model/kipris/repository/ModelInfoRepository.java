@@ -29,4 +29,7 @@ public interface ModelInfoRepository extends JpaRepository<ModelInfo, Integer> {
 
     Optional<ModelInfo> findByModelSeqAndRegId(int metaSeq, String memberId);
 
+    ModelInfo findTopByRegistrationNumber(String registrationNumber);
+
+    ModelInfo findByModelSeq(String modelSeq);
 }

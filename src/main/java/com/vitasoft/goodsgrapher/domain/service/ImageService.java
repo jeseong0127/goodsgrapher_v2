@@ -3,13 +3,14 @@ package com.vitasoft.goodsgrapher.domain.service;
 import com.vitasoft.goodsgrapher.domain.exception.image.CannotUploadImageException;
 import com.vitasoft.goodsgrapher.domain.exception.image.CannotViewImageException;
 import com.vitasoft.goodsgrapher.domain.exception.image.ImageNotFoundException;
+import com.vitasoft.goodsgrapher.domain.model.enums.ImageType;
 import com.vitasoft.goodsgrapher.domain.model.kipris.entity.DesignImage;
 import com.vitasoft.goodsgrapher.domain.model.kipris.entity.DesignInfo;
 import com.vitasoft.goodsgrapher.domain.model.kipris.entity.ModelImage;
 import com.vitasoft.goodsgrapher.domain.model.kipris.entity.ModelInfo;
 import com.vitasoft.goodsgrapher.domain.model.kipris.repository.DesignImageRepository;
-import com.vitasoft.goodsgrapher.domain.model.kipris.repository.DesignInfoRepository;
 import com.vitasoft.goodsgrapher.domain.model.kipris.repository.ModelImageRepository;
+import com.vitasoft.goodsgrapher.domain.model.kipris.repository.ModelInfoRepository;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;
@@ -46,6 +47,7 @@ public class ImageService {
 
     private final ModelImageRepository modelImageRepository;
     private final DesignImageRepository designImageRepository;
+    private final ModelInfoRepository modelInfoRepository;
 
     public ModelImage uploadMetadataImage(String memberId, ModelInfo modelInfo, MultipartFile file, int displayOrder, DesignInfo designInfo, JSONObject jsonObject) {
         int lastIndex = Objects.requireNonNull(file.getOriginalFilename()).lastIndexOf("_");
@@ -73,7 +75,7 @@ public class ImageService {
         String[] brandCodeList = {"ACR", "CRG", "DY", "HP", "LA", "LG", "MOB", "MSC", "SG", "SH", "SS", "TS"};
         int index = 0;
         String brandCode = "ZZ";
-        if(lastRightHolderName == null) {
+        if (lastRightHolderName == null) {
             return brandCode;
         }
         for (String brandName : brandNameList) {
@@ -97,16 +99,18 @@ public class ImageService {
         }
     }
 
-    public byte[] viewImage(int designImgSeq) {
-//        ArticleFile articleFile = articleFileRepository.findById(imageId).orElseThrow(() -> new ImageNotFoundException(imageId));
-//        return this.viewImage(new File(imagePath, designImage.getImgPath()));
-        DesignImage designImage = designImageRepository.findById(designImgSeq).orElseThrow(() -> new ImageNotFoundException(designImgSeq));
-        return this.viewImage(new File(modelImagesWorkerPath,designImage.getImgPath()));
-    }
-
-    public byte[] viewInspectImage(int uploadSeq) {
-        ModelImage modelImage = modelImageRepository.findById(uploadSeq).orElseThrow(() -> new ImageNotFoundException(uploadSeq));
-        return this.viewImage(new File((modelImagesWorkerPath), modelImage.getFileName()));
+    public byte[] viewImage(ImageType type, int seq) {
+        File image;
+        if (type == ImageType.DESIGN_IMAGE) {
+            DesignImage designImage = designImageRepository.findById(seq)
+                    .orElseThrow(() -> new ImageNotFoundException(seq));
+            image = new File(designImagesPath, designImage.getImgPath());
+        } else {
+            ModelImage modelImage = modelImageRepository.findById(seq)
+                    .orElseThrow(() -> new ImageNotFoundException(seq));
+            image = new File(modelImagesWorkerPath, modelImage.getFileName());
+        }
+        return this.viewImage(image);
     }
 
     private byte[] viewImage(File image) {
@@ -125,6 +129,17 @@ public class ImageService {
     }
 
     public byte[] viewThumbnailImage(String imagePath) {
-        return this.viewImage(new File( imagePath));
+        String registrationNumber = FilenameUtils.getBaseName(imagePath);
+
+        ModelInfo modelInfo = modelInfoRepository.findTopByRegistrationNumber(registrationNumber);
+
+        String fileName;
+        if (modelInfo != null) {
+            fileName = modelInfo.getPathImgGoods();
+        } else {
+            fileName = imagePath;
+        }
+
+        return this.viewImage(new File(fileName));
     }
 }

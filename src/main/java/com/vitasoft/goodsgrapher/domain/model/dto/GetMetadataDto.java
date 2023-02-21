@@ -1,11 +1,14 @@
 package com.vitasoft.goodsgrapher.domain.model.dto;
 
+import com.vitasoft.goodsgrapher.domain.model.kipris.entity.DesignInfo;
 import com.vitasoft.goodsgrapher.domain.model.kipris.entity.ModelInfo;
 
 import java.time.LocalDateTime;
 
+import lombok.AllArgsConstructor;
 import lombok.Getter;
 
+@AllArgsConstructor
 @Getter
 public class GetMetadataDto {
     private String type;
@@ -17,6 +20,9 @@ public class GetMetadataDto {
     private final String regId;
     private final LocalDateTime regDate;
     private final String pathImg;
+    private DesignInfo designInfo;
+    private String registrationNumber;
+    private String lastRightHolderName;
     private String confidence;
 
     public GetMetadataDto(ModelInfo modelInfo) {
@@ -28,9 +34,10 @@ public class GetMetadataDto {
         this.regId = modelInfo.getRegId();
         this.regDate = modelInfo.getRegDate();
         this.pathImg = modelInfo.getPathImgGoods();
+        this.designInfo = modelInfo.getDesignInfo();
     }
 
-    public GetMetadataDto(ModelInfo modelInfo, String type, String confidence) {
+    public GetMetadataDto(ModelInfo modelInfo, String type, DesignInfo designInfo, String confidence) {
         this.modelSeq = modelInfo.getModelSeq();
         this.productCategory = modelInfo.getProductCategory();
         this.articleName = modelInfo.getArticleName();
@@ -43,7 +50,7 @@ public class GetMetadataDto {
         this.confidence = confidence;
     }
 
-    public GetMetadataDto(ModelInfo modelInfo, String type, String imgPath, String confidence) {
+    public GetMetadataDto(ModelInfo modelInfo, String type, GetImageSearchDto getImageSearchDto, String confidence) {
         this.modelSeq = modelInfo.getModelSeq();
         this.productCategory = modelInfo.getProductCategory();
         this.articleName = modelInfo.getArticleName();
@@ -51,8 +58,10 @@ public class GetMetadataDto {
         this.companyName = modelInfo.getCompanyName();
         this.regId = modelInfo.getRegId();
         this.regDate = modelInfo.getRegDate();
-        this.pathImg = imgPath;
+        this.pathImg = getImageSearchDto.getImgPath();
         this.type = type;
         this.confidence = confidence;
+        this.lastRightHolderName = getImageSearchDto.getLastRightHolderName();
+        this.registrationNumber = getImageSearchDto.getRegistrationNumber();
     }
 }

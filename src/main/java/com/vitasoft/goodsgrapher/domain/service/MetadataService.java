@@ -5,6 +5,7 @@ import com.vitasoft.goodsgrapher.domain.exception.metadata.DuplicationReserveIdE
 import com.vitasoft.goodsgrapher.domain.exception.metadata.ExceededReservedCountLimitException;
 import com.vitasoft.goodsgrapher.domain.exception.metadata.ModelInfoNotFoundException;
 import com.vitasoft.goodsgrapher.domain.model.dto.GetCategoryDto;
+import com.vitasoft.goodsgrapher.domain.model.dto.GetImageSearchDto;
 import com.vitasoft.goodsgrapher.domain.model.dto.GetMetadataDetailDto;
 import com.vitasoft.goodsgrapher.domain.model.dto.GetMetadataDto;
 import com.vitasoft.goodsgrapher.domain.model.dto.GetModelImageDto;
@@ -73,11 +74,11 @@ public class MetadataService {
     }
 
     public List<GetMetadataDto> getImageSearchMetadata(List<String> images, List<String> confidence) {
-        cancelExcessReserveTime();
-
         List<GetMetadataDto> metadataDtos = new ArrayList<>();
 
         List<ModelInfo> modelInfoList = modelInfoRepository.findAllByModelNameIsNotNullAndUseYn('Y');
+
+//        cancelExcessReserveTime();
 
         Map<String, String> keyValueMap = new TreeMap<>();
         for (int i = 0; i < images.size(); i++) {
@@ -86,15 +87,15 @@ public class MetadataService {
 
         for (String pathImage : images) {
             String pathName = getPathName(pathImage);
+            GetImageSearchDto getImageSearchDto = designInfoRepository.findDistinctByRegistrationNumber(pathName);
             modelInfoList.forEach(modelInfo -> {
-                String imgPath = designInfoRepository.findAllByRegistrationNumber(pathName);
-                if (modelInfo.getPathImgGoods() != null && !modelInfo.getPathImgGoods().equals("")) {
+                if (modelInfo.getPathImgGoods() != null && !modelInfo.getPathImgGoods().isEmpty()) {
                     if (modelInfo.getRegistrationNumber().equals(pathName)) {
-                        metadataDtos.add(new GetMetadataDto(modelInfo, "photo", keyValueMap.get(pathImage)));
+                        metadataDtos.add(new GetMetadataDto(modelInfo, "photo", getImageSearchDto, keyValueMap.get(pathImage)));
                     }
-                } else if (imgPath != null && !imgPath.equals("")) {
+                } else if (getImageSearchDto.getImgPath() != null && !getImageSearchDto.getImgPath().isEmpty()) {
                     if (modelInfo.getRegistrationNumber().equals(pathName))
-                        metadataDtos.add(new GetMetadataDto(modelInfo, "drawing", imgPath, keyValueMap.get(pathImage)));
+                        metadataDtos.add(new GetMetadataDto(modelInfo, "drawing", getImageSearchDto, keyValueMap.get(pathImage)));
                 }
             });
         }
@@ -103,19 +104,19 @@ public class MetadataService {
     }
 
     private String getPathName(String pathImage) {
-        String pathName = pathImage.substring(pathImage.indexOf("_") + 1, pathImage.lastIndexOf("."));
+        String pathName = pathImage.substring(0, pathImage.lastIndexOf("."));
         if (pathName.startsWith("DM")) {
             pathName = pathName.replace("DM", "DM/");
         }
         return pathName;
     }
 
-    public void cancelExcessReserveTime() {
+    public void cancelExcessReserveTime(int modelSeq) {
         LocalDateTime now = LocalDateTime.now();
 
         workRepository.findAllByStatus("1").stream()
                 .filter(work -> now.minusDays(2).isAfter(work.getRegDate()))
-                .forEach(work -> cancelReserveMetadata(work.getWorkSeq(), work.getRegId()));
+                .forEach(work -> cancelReserveMetadata(modelSeq, work.getRegId()));
     }
 
     public void reserveMetadata(String memberId, int modelSeq) {
