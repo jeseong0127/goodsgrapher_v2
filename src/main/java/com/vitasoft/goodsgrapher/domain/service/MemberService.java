@@ -29,8 +29,6 @@ import org.springframework.transaction.annotation.Transactional;
 @Transactional
 public class MemberService {
 
-    private final AdjustmentRepository adjustmentRepository;
-
     private final WorkRepository workRepository;
 
     private final ModelInfoRepository modelInfoRepository;
@@ -44,7 +42,7 @@ public class MemberService {
     @Transactional(readOnly = true)
     public List<GetMetadataDto> getMetadata(String memberId) {
 
-        List<Work> workList = workRepository.findAllByRegIdAndStatus(memberId, "1");
+        List<Work> workList = workRepository.findAllByRegId(memberId);
 
         List<ModelInfo> modelInfoList = new ArrayList<>();
 
@@ -55,7 +53,7 @@ public class MemberService {
         return modelInfoList.stream()
                 .map(dto -> {
                             int workedCount = modelImageRepository.countAllByRegIdAndModelSeq(memberId, dto.getModelSeq());
-                            Work work = workRepository.findByRegIdAndModelSeqAndStatus(memberId, dto.getModelSeq(), "1");
+                            Work work = workRepository.findByRegIdAndModelSeq(memberId, dto.getModelSeq());
                             return new GetMetadataDto(dto, workedCount, work.getRegDate());
                         }
                 )
