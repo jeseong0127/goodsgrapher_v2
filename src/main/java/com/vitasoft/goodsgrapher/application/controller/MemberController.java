@@ -36,7 +36,7 @@ public class MemberController {
     public AccountsResponse getAccounts(
             @MemberInfo AuthenticatedMember member
     ) {
-        return new AccountsResponse(memberService.getAccounts(member.getMemberId()));
+        return memberService.getAccounts(member.getMemberId());
     }
 
 //    @ApiOperation("내 정산목록의 상세정보 가져오기")

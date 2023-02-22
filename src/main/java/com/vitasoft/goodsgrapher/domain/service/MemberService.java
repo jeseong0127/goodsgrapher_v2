@@ -1,5 +1,6 @@
 package com.vitasoft.goodsgrapher.domain.service;
 
+import com.vitasoft.goodsgrapher.application.response.AccountsResponse;
 import com.vitasoft.goodsgrapher.domain.model.dto.GetAccountsDto;
 import com.vitasoft.goodsgrapher.domain.model.dto.GetMetadataDto;
 import com.vitasoft.goodsgrapher.domain.model.kipris.entity.ModelInfo;
@@ -9,7 +10,6 @@ import com.vitasoft.goodsgrapher.domain.model.kipris.repository.ModelImageReposi
 import com.vitasoft.goodsgrapher.domain.model.kipris.repository.ModelInfoRepository;
 import com.vitasoft.goodsgrapher.domain.model.kipris.repository.WorkRepository;
 
-import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -45,7 +45,7 @@ public class MemberService {
         return modelInfoList.stream()
                 .map(dto -> {
                             int workedCount = modelImageRepository.countAllByRegIdAndModelSeq(memberId, dto.getModelSeq());
-                    Work work = workRepository.findByRegIdAndModelSeqAndStatus(memberId, dto.getModelSeq(), "1");
+                            Work work = workRepository.findByRegIdAndModelSeqAndStatus(memberId, dto.getModelSeq(), "1");
                             return new GetMetadataDto(dto, workedCount, work.getRegDate());
                         }
                 )
@@ -53,18 +53,25 @@ public class MemberService {
     }
 
     @Transactional(readOnly = true)
-    public List<GetAccountsDto> getAccounts(String memberId) {
-        return adjustmentRepository.findByAdjustId(memberId).stream()
-                .map(GetAccountsDto::new)
-                .collect(Collectors.toList());
+    public AccountsResponse getAccounts(String memberId) {
+        List<Work> workList = workRepository.findAllByRegId(memberId);
+        List<GetAccountsDto> getAccountsDtoList = new ArrayList<>();
+
+        workList.forEach(work -> {
+            int workedCount = modelImageRepository.countAllByRegIdAndModelSeq(memberId, work.getModelSeq());
+            getAccountsDtoList.add(new GetAccountsDto(work, workedCount));
+        });
+
+        return new AccountsResponse(getAccountsDtoList);
     }
 
 //    @Transactional(readOnly = true)
-//    public AccountDetailResponse getAccountDetail(int metaSeq, String memberId) {
+//    public AccountDetailResponse getAccountDetail(int modelSeq, String memberId) {
 //        ModelInfo metadata = metadataRepository.findById(metaSeq).orElseThrow(() -> new MetadataNotFoundException(metaSeq));
 //
 //        List<ArticleFile> articleFile = articleFileRepository.findAllByBoardNameAndArticleIdAndIsDeletedAndRegId("METAIMG", metaSeq, "0", memberId);
 //
 //        return new AccountDetailResponse(metadata, articleFile);
+
 //    }
 }

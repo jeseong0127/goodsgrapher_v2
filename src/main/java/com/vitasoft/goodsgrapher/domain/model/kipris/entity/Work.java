@@ -29,6 +29,12 @@ public class Work {
 
     private String status;
 
+    private String inspectorId;
+
+    private LocalDateTime updDate;
+
+    private LocalDateTime inspectDate;
+
     public Work(String regId, int modelSeq) {
         this.modelSeq = modelSeq;
         this.regId = regId;
