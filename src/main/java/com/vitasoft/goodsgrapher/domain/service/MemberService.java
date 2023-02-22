@@ -64,7 +64,7 @@ public class MemberService {
 
     @Transactional(readOnly = true)
     public AccountsResponse getAccounts(String memberId) {
-        List<Work> workList = workRepository.findAllByRegId(memberId);
+        List<Work> workList = workRepository.findAllByRegIdAndStatus(memberId, "5");
         List<GetAccountsDto> getAccountsDtoList = new ArrayList<>();
 
         workList.forEach(work -> {
@@ -78,11 +78,12 @@ public class MemberService {
     @Transactional(readOnly = true)
     public AccountDetailResponse getAccountDetail(int modelSeq, String memberId) {
         List<ModelImage> modelImages = modelImageRepository.findAllByModelSeqAndRegId(modelSeq, memberId);
-
-        DesignInfo designInfo = designInfoRepository.findByRegistrationNumber(modelImages.get(0).getRegistrationNumber());
-
-        List<DesignImage> designImages = new ArrayList<>(designImageRepository.findAllByDesignSeqAndUseYn(designInfo.getDesignSeq(), "Y"));
-
+        DesignInfo designInfo;
+        List<DesignImage> designImages = new ArrayList<>();
+        if (!modelImages.isEmpty()) {
+            designInfo = designInfoRepository.findByRegistrationNumber(modelImages.get(0).getRegistrationNumber());
+            designImages = designImageRepository.findAllByDesignSeqAndUseYn(designInfo.getDesignSeq(), "Y");
+        }
         return new AccountDetailResponse(designImages, modelImages);
     }
 }
