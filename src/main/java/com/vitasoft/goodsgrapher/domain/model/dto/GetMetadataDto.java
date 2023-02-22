@@ -26,6 +26,7 @@ public class GetMetadataDto {
     private String confidence;
     private int workedCount;
     private LocalDateTime reserveDate;
+    private String status;
 
     public GetMetadataDto(ModelInfo modelInfo) {
         this.modelSeq = modelInfo.getModelSeq();
@@ -39,10 +40,11 @@ public class GetMetadataDto {
         this.designInfo = modelInfo.getDesignInfo();
     }
 
-    public GetMetadataDto(ModelInfo modelInfo, int workedCount, LocalDateTime reserveDate) {
+    public GetMetadataDto(ModelInfo modelInfo, int workedCount, LocalDateTime reserveDate, String status) {
         this(modelInfo);
         this.workedCount = workedCount;
         this.reserveDate = reserveDate;
+        this.status = status;
     }
 
     public GetMetadataDto(ModelInfo modelInfo, String type, GetImageSearchDto getImageSearchDto, String confidence) {

@@ -1,6 +1,5 @@
 package com.vitasoft.goodsgrapher.domain.model.dto;
 
-import com.vitasoft.goodsgrapher.domain.model.kipris.entity.DesignInfo;
 import com.vitasoft.goodsgrapher.domain.model.kipris.entity.ModelInfo;
 
 import java.time.LocalDateTime;
@@ -16,9 +15,10 @@ public class GetMetadataDetailDto {
     private final String companyName;
     private final String regId;
     private final LocalDateTime regDate;
-    private final DesignInfo designInfo;
+    private final GetDesignInfoDto designInfo;
+    private String status;
 
-    public GetMetadataDetailDto(ModelInfo modelInfo, DesignInfo designInfo) {
+    public GetMetadataDetailDto(ModelInfo modelInfo, GetDesignInfoDto designInfo, String status) {
         this.modelSeq = modelInfo.getModelSeq();
         this.productCategory = modelInfo.getProductCategory();
         this.articleName = modelInfo.getArticleName();
@@ -27,5 +27,6 @@ public class GetMetadataDetailDto {
         this.regId = modelInfo.getRegId();
         this.regDate = modelInfo.getRegDate();
         this.designInfo = designInfo;
+        this.status = status;
     }
 }

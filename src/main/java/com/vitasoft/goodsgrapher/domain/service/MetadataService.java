@@ -4,16 +4,21 @@ import com.vitasoft.goodsgrapher.application.request.DeleteMetadataRequest;
 import com.vitasoft.goodsgrapher.domain.exception.metadata.DuplicationReserveIdException;
 import com.vitasoft.goodsgrapher.domain.exception.metadata.ExceededReservedCountLimitException;
 import com.vitasoft.goodsgrapher.domain.exception.metadata.ModelInfoNotFoundException;
+import com.vitasoft.goodsgrapher.domain.model.dto.GetAccountsDto;
 import com.vitasoft.goodsgrapher.domain.model.dto.GetCategoryDto;
+import com.vitasoft.goodsgrapher.domain.model.dto.GetDesignImageDto;
+import com.vitasoft.goodsgrapher.domain.model.dto.GetDesignInfoDto;
 import com.vitasoft.goodsgrapher.domain.model.dto.GetImageSearchDto;
 import com.vitasoft.goodsgrapher.domain.model.dto.GetMetadataDetailDto;
 import com.vitasoft.goodsgrapher.domain.model.dto.GetMetadataDto;
 import com.vitasoft.goodsgrapher.domain.model.dto.GetModelImageDto;
+import com.vitasoft.goodsgrapher.domain.model.kipris.entity.DesignImage;
 import com.vitasoft.goodsgrapher.domain.model.kipris.entity.DesignInfo;
 import com.vitasoft.goodsgrapher.domain.model.kipris.entity.ModelImage;
 import com.vitasoft.goodsgrapher.domain.model.kipris.entity.ModelInfo;
 import com.vitasoft.goodsgrapher.domain.model.kipris.entity.Work;
 import com.vitasoft.goodsgrapher.domain.model.kipris.repository.CodeRepository;
+import com.vitasoft.goodsgrapher.domain.model.kipris.repository.DesignImageRepository;
 import com.vitasoft.goodsgrapher.domain.model.kipris.repository.DesignInfoRepository;
 import com.vitasoft.goodsgrapher.domain.model.kipris.repository.ModelImageRepository;
 import com.vitasoft.goodsgrapher.domain.model.kipris.repository.ModelInfoRepository;
@@ -55,6 +60,8 @@ public class MetadataService {
     private final ModelImageRepository modelImageRepository;
 
     private final DesignInfoRepository designInfoRepository;
+
+    private final DesignImageRepository designImageRepository;
 
     private final WorkRepository workRepository;
 
@@ -152,12 +159,16 @@ public class MetadataService {
     }
 
     @Transactional(readOnly = true)
-    public GetMetadataDetailDto getMetadataDetail(int modelSeq) {
+    public GetMetadataDetailDto getMetadataDetail(int modelSeq, String memberId) {
         ModelInfo modelInfo = modelInfoRepository.findById(modelSeq).orElseThrow(() -> new ModelInfoNotFoundException(modelSeq));
 
         DesignInfo designInfo = designInfoRepository.findByRegistrationNumber(modelInfo.getRegistrationNumber());
 
-        return new GetMetadataDetailDto(modelInfo, designInfo);
+        Work work = workRepository.findByRegIdAndModelSeq(memberId, modelSeq);
+
+        List<GetDesignImageDto> designImages = designImageRepository.findAllByDesignSeqAndUseYn(designInfo.getDesignSeq(), "Y")
+                .stream().map(designImage -> new GetDesignImageDto(designImage.getImgNumber(), designImage.getImgPath(), designImage.getUseYn(), designImage.getDesignImgSeq())).collect(Collectors.toList());
+        return new GetMetadataDetailDto(modelInfo, new GetDesignInfoDto(designInfo, designImages), work.getStatus());
     }
 
     @Transactional(readOnly = true)

@@ -54,7 +54,7 @@ public class MemberService {
                 .map(dto -> {
                             int workedCount = modelImageRepository.countAllByRegIdAndModelSeq(memberId, dto.getModelSeq());
                             Work work = workRepository.findByRegIdAndModelSeq(memberId, dto.getModelSeq());
-                            return new GetMetadataDto(dto, workedCount, work.getRegDate());
+                            return new GetMetadataDto(dto, workedCount, work.getRegDate(), work.getStatus());
                         }
                 )
                 .collect(Collectors.toList());

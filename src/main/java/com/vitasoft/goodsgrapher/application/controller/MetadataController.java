@@ -89,9 +89,10 @@ public class MetadataController {
     @GetMapping("/{modelSeq}")
     @ResponseStatus(HttpStatus.OK)
     public MetadataDetailResponse getMetadataDetail(
+            @MemberInfo AuthenticatedMember member,
             @PathVariable int modelSeq
     ) {
-        return new MetadataDetailResponse(metadataService.getMetadataDetail(modelSeq));
+        return new MetadataDetailResponse(metadataService.getMetadataDetail(modelSeq, member.getMemberId()));
     }
 
     @ApiOperation("메타데이터 작업 삭제하기")
