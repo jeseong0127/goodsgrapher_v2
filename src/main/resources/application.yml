@@ -52,9 +52,6 @@ app:
 
 image:
   upload-path:
-    designImages: ${DESIGN_IMAGES}
-    designThumbnailImage: ${DESIGN_THUMBNAIL_IMAGE}
-    modelImagesGoods: ${MODEL_IMAGES_GOODS}
     modelImagesWorker: ${MODEL_IMAGES_WORKER}
 
 logging:

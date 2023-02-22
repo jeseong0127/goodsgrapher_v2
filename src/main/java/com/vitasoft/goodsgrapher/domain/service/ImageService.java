@@ -33,15 +33,6 @@ import org.springframework.web.multipart.MultipartFile;
 @RequiredArgsConstructor
 @Transactional
 public class ImageService {
-    @Value("${image.upload-path.designImages}")
-    private String designImagesPath;
-
-    @Value("${image.upload-path.designThumbnailImage}")
-    private String designThumbnailImagePath;
-
-    @Value("${image.upload-path.modelImagesGoods}")
-    private String modelImagesGoodsPath;
-
     @Value("${image.upload-path.modelImagesWorker}")
     private String modelImagesWorkerPath;
 
