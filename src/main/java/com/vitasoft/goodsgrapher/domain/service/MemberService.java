@@ -1,11 +1,17 @@
 package com.vitasoft.goodsgrapher.domain.service;
 
+import com.vitasoft.goodsgrapher.application.response.AccountDetailResponse;
 import com.vitasoft.goodsgrapher.application.response.AccountsResponse;
 import com.vitasoft.goodsgrapher.domain.model.dto.GetAccountsDto;
 import com.vitasoft.goodsgrapher.domain.model.dto.GetMetadataDto;
+import com.vitasoft.goodsgrapher.domain.model.kipris.entity.DesignImage;
+import com.vitasoft.goodsgrapher.domain.model.kipris.entity.DesignInfo;
+import com.vitasoft.goodsgrapher.domain.model.kipris.entity.ModelImage;
 import com.vitasoft.goodsgrapher.domain.model.kipris.entity.ModelInfo;
 import com.vitasoft.goodsgrapher.domain.model.kipris.entity.Work;
 import com.vitasoft.goodsgrapher.domain.model.kipris.repository.AdjustmentRepository;
+import com.vitasoft.goodsgrapher.domain.model.kipris.repository.DesignImageRepository;
+import com.vitasoft.goodsgrapher.domain.model.kipris.repository.DesignInfoRepository;
 import com.vitasoft.goodsgrapher.domain.model.kipris.repository.ModelImageRepository;
 import com.vitasoft.goodsgrapher.domain.model.kipris.repository.ModelInfoRepository;
 import com.vitasoft.goodsgrapher.domain.model.kipris.repository.WorkRepository;
@@ -30,6 +36,10 @@ public class MemberService {
     private final ModelInfoRepository modelInfoRepository;
 
     private final ModelImageRepository modelImageRepository;
+
+    private final DesignImageRepository designImageRepository;
+
+    private final DesignInfoRepository designInfoRepository;
 
     @Transactional(readOnly = true)
     public List<GetMetadataDto> getMetadata(String memberId) {
@@ -65,13 +75,14 @@ public class MemberService {
         return new AccountsResponse(getAccountsDtoList);
     }
 
-//    @Transactional(readOnly = true)
-//    public AccountDetailResponse getAccountDetail(int modelSeq, String memberId) {
-//        ModelInfo metadata = metadataRepository.findById(metaSeq).orElseThrow(() -> new MetadataNotFoundException(metaSeq));
-//
-//        List<ArticleFile> articleFile = articleFileRepository.findAllByBoardNameAndArticleIdAndIsDeletedAndRegId("METAIMG", metaSeq, "0", memberId);
-//
-//        return new AccountDetailResponse(metadata, articleFile);
+    @Transactional(readOnly = true)
+    public AccountDetailResponse getAccountDetail(int modelSeq, String memberId) {
+        List<ModelImage> modelImages = modelImageRepository.findAllByModelSeqAndRegId(modelSeq, memberId);
 
-//    }
+        DesignInfo designInfo = designInfoRepository.findByRegistrationNumber(modelImages.get(0).getRegistrationNumber());
+
+        List<DesignImage> designImages = new ArrayList<>(designImageRepository.findAllByDesignSeqAndUseYn(designInfo.getDesignSeq(), "Y"));
+
+        return new AccountDetailResponse(designImages, modelImages);
+    }
 }

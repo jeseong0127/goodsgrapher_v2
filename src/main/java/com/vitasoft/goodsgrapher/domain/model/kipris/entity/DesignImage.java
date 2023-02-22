@@ -21,6 +21,8 @@ public class DesignImage {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int designImgSeq;
 
+    private int designSeq;
+
     private String imageName;
 
     private String imgUrl;
@@ -32,6 +34,8 @@ public class DesignImage {
     private String updId;
 
     private LocalDateTime updDate;
+
+    private String useYn;
 
     public DesignImage(int designImgSeq, String imageName, String imgUrl, String imgPath, int imgNumber, String updId, LocalDateTime updDate) {
         this.designImgSeq = designImgSeq;
