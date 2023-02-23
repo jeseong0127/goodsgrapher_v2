@@ -53,7 +53,7 @@ public class MemberService {
 
         return modelInfoList.stream()
                 .map(dto -> {
-                            int workedCount = modelImageRepository.countAllByRegIdAndModelSeq(memberId, dto.getModelSeq());
+                            int workedCount = modelImageRepository.countAllByRegIdAndModelSeqAndIsDeleted(memberId, dto.getModelSeq(), "0");
                             Work work = workRepository.findByRegIdAndModelSeq(memberId, dto.getModelSeq());
                             return new GetMetadataDto(dto, new GetDesignInfoDto(designInfoRepository.findByRegistrationNumber(dto.getRegistrationNumber()),
                                     designImageRepository.findAllByDesignSeqAndUseYn(designInfoRepository.findByRegistrationNumber(dto.getRegistrationNumber()).getDesignSeq(), "Y")
@@ -70,7 +70,7 @@ public class MemberService {
         List<GetAccountsDto> getAccountsDtoList = new ArrayList<>();
 
         workList.forEach(work -> {
-            int workedCount = modelImageRepository.countAllByRegIdAndModelSeq(memberId, work.getModelSeq());
+            int workedCount = modelImageRepository.countAllByRegIdAndModelSeqAndIsDeleted(memberId, work.getModelSeq(), "0");
             getAccountsDtoList.add(new GetAccountsDto(work, workedCount));
         });
 
