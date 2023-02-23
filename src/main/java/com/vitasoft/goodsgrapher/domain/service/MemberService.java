@@ -3,13 +3,14 @@ package com.vitasoft.goodsgrapher.domain.service;
 import com.vitasoft.goodsgrapher.application.response.AccountDetailResponse;
 import com.vitasoft.goodsgrapher.application.response.AccountsResponse;
 import com.vitasoft.goodsgrapher.domain.model.dto.GetAccountsDto;
+import com.vitasoft.goodsgrapher.domain.model.dto.GetDesignImageDto;
+import com.vitasoft.goodsgrapher.domain.model.dto.GetDesignInfoDto;
 import com.vitasoft.goodsgrapher.domain.model.dto.GetMetadataDto;
 import com.vitasoft.goodsgrapher.domain.model.kipris.entity.DesignImage;
 import com.vitasoft.goodsgrapher.domain.model.kipris.entity.DesignInfo;
 import com.vitasoft.goodsgrapher.domain.model.kipris.entity.ModelImage;
 import com.vitasoft.goodsgrapher.domain.model.kipris.entity.ModelInfo;
 import com.vitasoft.goodsgrapher.domain.model.kipris.entity.Work;
-import com.vitasoft.goodsgrapher.domain.model.kipris.repository.AdjustmentRepository;
 import com.vitasoft.goodsgrapher.domain.model.kipris.repository.DesignImageRepository;
 import com.vitasoft.goodsgrapher.domain.model.kipris.repository.DesignInfoRepository;
 import com.vitasoft.goodsgrapher.domain.model.kipris.repository.ModelImageRepository;
@@ -54,7 +55,10 @@ public class MemberService {
                 .map(dto -> {
                             int workedCount = modelImageRepository.countAllByRegIdAndModelSeq(memberId, dto.getModelSeq());
                             Work work = workRepository.findByRegIdAndModelSeq(memberId, dto.getModelSeq());
-                            return new GetMetadataDto(dto, workedCount, work.getRegDate(), work.getStatus());
+                            return new GetMetadataDto(dto, new GetDesignInfoDto(designInfoRepository.findByRegistrationNumber(dto.getRegistrationNumber()),
+                                    designImageRepository.findAllByDesignSeqAndUseYn(designInfoRepository.findByRegistrationNumber(dto.getRegistrationNumber()).getDesignSeq(), "Y")
+                                            .stream().map(designImage -> new GetDesignImageDto(designImage.getImgNumber(), designImage.getImgPath(), designImage.getUseYn(), designImage.getDesignImgSeq())).collect(Collectors.toList())
+                            ), workedCount, work.getRegDate(), work.getStatus());
                         }
                 )
                 .collect(Collectors.toList());

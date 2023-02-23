@@ -4,7 +4,6 @@ import com.vitasoft.goodsgrapher.application.request.DeleteMetadataRequest;
 import com.vitasoft.goodsgrapher.domain.exception.metadata.DuplicationReserveIdException;
 import com.vitasoft.goodsgrapher.domain.exception.metadata.ExceededReservedCountLimitException;
 import com.vitasoft.goodsgrapher.domain.exception.metadata.ModelInfoNotFoundException;
-import com.vitasoft.goodsgrapher.domain.model.dto.GetAccountsDto;
 import com.vitasoft.goodsgrapher.domain.model.dto.GetCategoryDto;
 import com.vitasoft.goodsgrapher.domain.model.dto.GetDesignImageDto;
 import com.vitasoft.goodsgrapher.domain.model.dto.GetDesignInfoDto;
@@ -12,7 +11,6 @@ import com.vitasoft.goodsgrapher.domain.model.dto.GetImageSearchDto;
 import com.vitasoft.goodsgrapher.domain.model.dto.GetMetadataDetailDto;
 import com.vitasoft.goodsgrapher.domain.model.dto.GetMetadataDto;
 import com.vitasoft.goodsgrapher.domain.model.dto.GetModelImageDto;
-import com.vitasoft.goodsgrapher.domain.model.kipris.entity.DesignImage;
 import com.vitasoft.goodsgrapher.domain.model.kipris.entity.DesignInfo;
 import com.vitasoft.goodsgrapher.domain.model.kipris.entity.ModelImage;
 import com.vitasoft.goodsgrapher.domain.model.kipris.entity.ModelInfo;
@@ -73,11 +71,23 @@ public class MetadataService {
     private final JSONParser parser = new JSONParser();
 
     public List<GetMetadataDto> getMetadataList() {
-        return modelInfoRepository.findAll().stream().map(GetMetadataDto::new).collect(Collectors.toList());
+        return modelInfoRepository.findAll().stream().map(modelInfo ->
+                new GetMetadataDto(modelInfo,
+                        new GetDesignInfoDto(designInfoRepository.findByRegistrationNumber(modelInfo.getRegistrationNumber()),
+                                designImageRepository.findAllByDesignSeqAndUseYn(designInfoRepository.findByRegistrationNumber(modelInfo.getRegistrationNumber()).getDesignSeq(), "Y")
+                                        .stream().map(designImage -> new GetDesignImageDto(designImage.getImgNumber(), designImage.getImgPath(), designImage.getUseYn(), designImage.getDesignImgSeq()))
+                                        .collect(Collectors.toList())))
+        ).collect(Collectors.toList());
     }
 
     public List<GetMetadataDto> getSearchMetadata(String searchWord, String codeId) {
-        return modelInfoRepository.findAllByMetadata(codeId, searchWord == null ? "" : searchWord, searchWord, searchWord).stream().map(GetMetadataDto::new).collect(Collectors.toList());
+        return modelInfoRepository.findAllByMetadata(codeId, searchWord == null ? "" : searchWord, searchWord, searchWord).stream().map(modelInfo ->
+                new GetMetadataDto(modelInfo,
+                        new GetDesignInfoDto(designInfoRepository.findByRegistrationNumber(modelInfo.getRegistrationNumber()),
+                                designImageRepository.findAllByDesignSeqAndUseYn(designInfoRepository.findByRegistrationNumber(modelInfo.getRegistrationNumber()).getDesignSeq(), "Y")
+                                        .stream().map(designImage -> new GetDesignImageDto(designImage.getImgNumber(), designImage.getImgPath(), designImage.getUseYn(), designImage.getDesignImgSeq()))
+                                        .collect(Collectors.toList())))
+        ).collect(Collectors.toList());
     }
 
     public List<GetMetadataDto> getImageSearchMetadata(List<String> images, List<String> confidence) {
@@ -151,8 +161,7 @@ public class MetadataService {
         workRepository.save(work);
     }
 
-
-    public void finishMetadata(String memberId, int modelSeq){
+    public void finishMetadata(String memberId, int modelSeq) {
         Work work = workRepository.findTopByModelSeqAndRegIdOrderByRegDate(modelSeq, memberId);
         work.setStatus("3");
         workRepository.save(work);
