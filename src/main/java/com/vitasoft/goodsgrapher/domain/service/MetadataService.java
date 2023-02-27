@@ -143,7 +143,7 @@ public class MetadataService {
 
         Work worked = workRepository.findTopByModelSeqAndRegIdOrderByRegDateDesc(modelSeq, memberId);
 
-        if (worked != null && Objects.equals(worked.getStatus(), "1"))
+        if (worked != null && !Objects.equals(worked.getStatus(), "0"))
             throw new DuplicationReserveIdException(modelSeq);
 
         Work work = new Work(memberId, modelSeq);
@@ -156,13 +156,13 @@ public class MetadataService {
         modelImage.forEach(image -> image.setIsDeleted("1"));
         modelImageRepository.saveAll(modelImage);
 
-        Work work = workRepository.findTopByModelSeqAndRegIdOrderByRegDate(modelSeq, memberId);
+        Work work = workRepository.findTopByModelSeqAndRegIdOrderByRegDateDesc(modelSeq, memberId);
         work.setStatus("0");
         workRepository.save(work);
     }
 
     public void finishMetadata(String memberId, int modelSeq) {
-        Work work = workRepository.findTopByModelSeqAndRegIdOrderByRegDate(modelSeq, memberId);
+        Work work = workRepository.findTopByModelSeqAndRegIdOrderByRegDateDesc(modelSeq, memberId);
         work.setStatus("3");
         work.setRegDate(LocalDateTime.now());
         workRepository.save(work);
@@ -195,7 +195,8 @@ public class MetadataService {
 
         DesignInfo designInfo = designInfoRepository.findByRegistrationNumber(modelInfo.getRegistrationNumber());
 
-        Work work = new Work(memberId, modelSeq);
+//        Work work = new Work(memberId, modelSeq);
+        Work work = workRepository.findTopByModelSeqAndRegIdOrderByRegDateDesc(modelSeq, memberId);
         work.start();
         workRepository.save(work);
 

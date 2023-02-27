@@ -26,9 +26,9 @@ public interface WorkRepository extends JpaRepository<Work, Integer> {
 
     Work findByRegIdAndModelSeqAndStatus(String memberId, int modelSeq, String status);
 
-    @Query("select work from Work work where work.regId = :memberId and work.modelSeq = :modelSeq and work.status in ('1', '3', '4')")
+    @Query("select work from Work work where work.regId = :memberId and work.modelSeq = :modelSeq and work.status in ('1','2', '3', '4')")
     Work findByRegIdAndModelSeq(String memberId, int modelSeq);
 
-    @Query("select work from Work work where work.regId = :memberId and work.status in ('1', '3', '4')")
+    @Query("select work from Work work where work.regId = :memberId and work.status in ('1', '2', '3', '4')")
     List<Work> findAllByRegId(String memberId);
 }
