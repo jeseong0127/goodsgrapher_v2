@@ -29,6 +29,12 @@ public class Work {
 
     private String status;
 
+    private String inspectorId;
+
+    private LocalDateTime updDate;
+
+    private LocalDateTime inspectDate;
+
     public Work(String regId, int modelSeq) {
         this.modelSeq = modelSeq;
         this.regId = regId;
@@ -41,9 +47,16 @@ public class Work {
 
     public void start() {
         this.status = "2";
+        this.updDate = LocalDateTime.now();
     }
 
     public void cancel() {
         this.status = "0";
+        this.updDate = LocalDateTime.now();
+    }
+
+    public void finish() {
+        this.status = "3";
+        this.updDate = LocalDateTime.now();
     }
 }

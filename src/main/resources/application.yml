@@ -9,8 +9,7 @@ server:
 spring:
   jpa:
     database: mysql
-#    database-platform: org.hibernate.dialect.MariaDB103Dialect
-    database-platform: org.hibernate.dialect.MySQL57InnoDBDialect
+    database-platform: org.hibernate.dialect.MariaDB103Dialect
     generate-ddl: false
     hibernate:
       ddl-auto: none
@@ -35,16 +34,14 @@ spring:
 
 kipris:
   datasource:
-#    driver-class-name: org.mariadb.jdbc.Driver
-    driver-class-name: com.mysql.cj.jdbc.Driver
+    driver-class-name: org.mariadb.jdbc.Driver
     url: ${DATABASE_URL}
     username: ${DATABASE_USERNAME}
     password: ${DATABASE_PASSWORD}
 
 sso:
   datasource:
-#    driver-class-name: org.mariadb.jdbc.Driver
-    driver-class-name: com.mysql.cj.jdbc.Driver
+    driver-class-name: org.mariadb.jdbc.Driver
     url: ${DATABASE_URL2}
     username: ${DATABASE_USERNAME2}
     password: ${DATABASE_PASSWORD2}
@@ -55,9 +52,7 @@ app:
 
 image:
   upload-path:
-    metadata: ${METADATA_UPLOAD_PATH}
-    inspect: ${INSPECT_UPLOAD_PATH}
-    fail: ${FAIL_UPLOAD_PATH}
+    modelImagesWorker: ${MODEL_IMAGES_WORKER}
 
 logging:
   level:

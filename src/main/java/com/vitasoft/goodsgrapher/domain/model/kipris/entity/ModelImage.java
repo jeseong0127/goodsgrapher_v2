@@ -1,6 +1,9 @@
 package com.vitasoft.goodsgrapher.domain.model.kipris.entity;
 
+import com.vladmihalcea.hibernate.type.json.JsonStringType;
+
 import java.time.LocalDateTime;
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -11,14 +14,18 @@ import lombok.Data;
 import lombok.RequiredArgsConstructor;
 import org.hibernate.annotations.DynamicInsert;
 import org.hibernate.annotations.DynamicUpdate;
+import org.hibernate.annotations.Type;
+import org.hibernate.annotations.TypeDef;
+import org.json.simple.JSONObject;
 
 @Entity
 @Table(name = "meta_model_images")
+@TypeDef(name = "json", typeClass = JsonStringType.class)
 @Data
 @DynamicUpdate
 @DynamicInsert
 @RequiredArgsConstructor
-public class ModelImages {
+public class ModelImage {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int uploadSeq;
@@ -65,7 +72,11 @@ public class ModelImages {
 
     private String etc2;
 
-    public ModelImages(String memberId, ModelInfo metadata, String fileName, String fileSize, String fileType, int displayOrder, String brandCode) {
+    @Type(type = "json")
+    @Column(columnDefinition = "jsonb")
+    private JSONObject imageJson;
+
+    public ModelImage(String memberId, ModelInfo metadata, String fileName, String fileSize, String fileType, int displayOrder, String brandCode, String viewpoint, JSONObject imageJson) {
         this.modelSeq = metadata.getModelSeq();
         this.designImgSeq = 0;
         this.displayOrder = displayOrder;
@@ -78,5 +89,7 @@ public class ModelImages {
         this.regId = memberId;
         this.regDate = LocalDateTime.now();
         this.inspectPf = 'N';
+        this.viewpoint = viewpoint;
+        this.imageJson = imageJson;
     }
 }

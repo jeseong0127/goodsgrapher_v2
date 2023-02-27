@@ -1,5 +1,6 @@
 package com.vitasoft.goodsgrapher.application.controller;
 
+import com.vitasoft.goodsgrapher.application.response.AccountDetailResponse;
 import com.vitasoft.goodsgrapher.application.response.AccountsResponse;
 import com.vitasoft.goodsgrapher.application.response.MetadataResponse;
 import com.vitasoft.goodsgrapher.core.security.AuthenticatedMember;
@@ -10,6 +11,7 @@ import io.swagger.annotations.ApiOperation;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
@@ -36,16 +38,16 @@ public class MemberController {
     public AccountsResponse getAccounts(
             @MemberInfo AuthenticatedMember member
     ) {
-        return new AccountsResponse(memberService.getAccounts(member.getMemberId()));
+        return memberService.getAccounts(member.getMemberId());
     }
 
-//    @ApiOperation("내 정산목록의 상세정보 가져오기")
-//    @GetMapping("/accounts/{metaSeq}")
-//    @ResponseStatus(HttpStatus.OK)
-//    public AccountDetailResponse getAccountDetail(
-//            @MemberInfo AuthenticatedMember member,
-//            @PathVariable int metaSeq
-//    ) {
-//        return memberService.getAccountDetail(metaSeq, member.getMemberId());
-//    }
+    @ApiOperation("내 정산목록의 상세정보 가져오기")
+    @GetMapping("/accounts/{modelSeq}")
+    @ResponseStatus(HttpStatus.OK)
+    public AccountDetailResponse getAccountDetail(
+            @MemberInfo AuthenticatedMember member,
+            @PathVariable int modelSeq
+    ) {
+        return memberService.getAccountDetail(modelSeq, member.getMemberId());
+    }
 }
