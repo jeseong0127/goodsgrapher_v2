@@ -166,7 +166,6 @@ public class MetadataService {
     public void finishMetadata(String memberId, int modelSeq) {
         Work work = workRepository.findTopByModelSeqAndRegIdOrderByRegDateDesc(modelSeq, memberId);
         work.finish();
-        work.setRegDate(LocalDateTime.now());
         workRepository.save(work);
     }
 

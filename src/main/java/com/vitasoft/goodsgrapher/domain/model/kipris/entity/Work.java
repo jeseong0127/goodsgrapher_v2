@@ -48,16 +48,16 @@ public class Work {
 
     public void start() {
         this.status = "2";
-        this.regDate = LocalDateTime.now();
+        this.updDate = LocalDateTime.now();
     }
 
     public void cancel() {
         this.status = "0";
-        this.regDate = LocalDateTime.now();
+        this.updDate = LocalDateTime.now();
     }
 
     public void finish() {
         this.status = "3";
-        this.regDate = LocalDateTime.now();
+        this.updDate = LocalDateTime.now();
     }
 }
