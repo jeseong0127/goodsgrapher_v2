@@ -52,4 +52,8 @@ public class Work {
     public void cancel() {
         this.status = "0";
     }
+
+    public void finish() {
+        this.status = "3";
+    }
 }

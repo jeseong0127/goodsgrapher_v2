@@ -157,13 +157,13 @@ public class MetadataService {
         modelImageRepository.saveAll(modelImage);
 
         Work work = workRepository.findTopByModelSeqAndRegIdOrderByRegDateDesc(modelSeq, memberId);
-        work.setStatus("0");
+        work.cancel();
         workRepository.save(work);
     }
 
     public void finishMetadata(String memberId, int modelSeq) {
         Work work = workRepository.findTopByModelSeqAndRegIdOrderByRegDateDesc(modelSeq, memberId);
-        work.setStatus("3");
+        work.finish();
         work.setRegDate(LocalDateTime.now());
         workRepository.save(work);
     }
