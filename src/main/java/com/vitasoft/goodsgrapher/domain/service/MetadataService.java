@@ -225,9 +225,10 @@ public class MetadataService {
 
         List<ModelImage> imgArray = new ArrayList<>();
         Map<Integer, List<MultipartFile>> imageGroups = getImageGroups(images);
+        int divNum = images.size() / 10;
         imageGroups.forEach((key, subImages) -> {
             for (int i = 0; i < subImages.size(); i++) {
-                ModelImage modelImage = imageService.uploadMetadataImage(memberId, modelInfo, subImages.get(i), i + 1, designInfo, jsonObjectList.get((key * 10) + i));
+                ModelImage modelImage = imageService.uploadMetadataImage(memberId, modelInfo, subImages.get(i), i + 1, designInfo, key == 300 && designInfo.getDesignSeq() != 286 ? jsonObjectList.get(((divNum - 1) * 10) + i) : jsonObjectList.get((key * 10) + i));
                 imgArray.add(modelImage);
                 files.add(new File(modelImagesWorkerPath, modelImage.getFileName()));
             }
@@ -241,9 +242,9 @@ public class MetadataService {
         Map<Integer, List<MultipartFile>> groups = new TreeMap<>();
 
         images.forEach(image -> {
-            int lastIndex = Objects.requireNonNull(image.getOriginalFilename()).lastIndexOf("_");
-            int indexNumber = Integer.parseInt(image.getOriginalFilename().substring(lastIndex + 1, lastIndex + 2));
-
+            int dashIndex = Objects.requireNonNull(image.getOriginalFilename()).lastIndexOf("_");
+            int dotIndex = Objects.requireNonNull(image.getOriginalFilename()).lastIndexOf(".");
+            int indexNumber = Integer.parseInt(image.getOriginalFilename().substring(dashIndex + 1, dotIndex));
             groups.putIfAbsent(indexNumber, new ArrayList<>());
             List<MultipartFile> subImages = groups.get(indexNumber);
             subImages.add(image);

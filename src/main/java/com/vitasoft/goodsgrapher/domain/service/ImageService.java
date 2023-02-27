@@ -41,8 +41,9 @@ public class ImageService {
     private final ModelInfoRepository modelInfoRepository;
 
     public ModelImage uploadMetadataImage(String memberId, ModelInfo modelInfo, MultipartFile file, int displayOrder, DesignInfo designInfo, JSONObject jsonObject) {
-        int lastIndex = Objects.requireNonNull(file.getOriginalFilename()).lastIndexOf("_");
-        String viewPoint = file.getOriginalFilename().substring(lastIndex + 1, lastIndex + 2);
+        int dashIndex = Objects.requireNonNull(file.getOriginalFilename()).lastIndexOf("_");
+        int dotIndex = Objects.requireNonNull(file.getOriginalFilename()).lastIndexOf(".");
+        String viewPoint = file.getOriginalFilename().substring(dashIndex + 1, dotIndex);
         String brandCode = formatLastRightHolderName(designInfo.getLastRightHolderName());
         String fileType = "." + FilenameUtils.getExtension(file.getOriginalFilename());
         String fileName = formatFileName(memberId, modelInfo, designInfo, displayOrder, fileType, brandCode, viewPoint);
