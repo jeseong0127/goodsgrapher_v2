@@ -81,6 +81,8 @@ public class MetadataService {
     }
 
     public List<GetMetadataDto> getSearchMetadata(String searchWord, String codeId) {
+        cancelExcessReserveTime();
+
         return modelInfoRepository.findAllByMetadata(codeId, searchWord == null ? "" : searchWord, searchWord, searchWord).stream().map(modelInfo ->
                 new GetMetadataDto(modelInfo,
                         new GetDesignInfoDto(designInfoRepository.findByRegistrationNumber(modelInfo.getRegistrationNumber()),
@@ -95,7 +97,7 @@ public class MetadataService {
 
         List<ModelInfo> modelInfoList = modelInfoRepository.findAllByModelNameIsNotNullAndUseYn('Y');
 
-//        cancelExcessReserveTime();
+        cancelExcessReserveTime();
 
         Map<String, String> keyValueMap = new TreeMap<>();
         for (int i = 0; i < images.size(); i++) {
@@ -128,12 +130,12 @@ public class MetadataService {
         return pathName;
     }
 
-    public void cancelExcessReserveTime(int modelSeq) {
+    public void cancelExcessReserveTime() {
         LocalDateTime now = LocalDateTime.now();
 
         workRepository.findAllByStatus("1").stream()
                 .filter(work -> now.minusDays(2).isAfter(work.getRegDate()))
-                .forEach(work -> cancelReserveMetadata(modelSeq, work.getRegId()));
+                .forEach(work -> cancelReserveMetadata(work.getModelSeq(), work.getRegId()));
     }
 
     public void reserveMetadata(String memberId, int modelSeq) {

@@ -43,17 +43,21 @@ public class Work {
 
     public void reserve() {
         this.status = "1";
+        this.regDate = LocalDateTime.now();
     }
 
     public void start() {
         this.status = "2";
+        this.regDate = LocalDateTime.now();
     }
 
     public void cancel() {
         this.status = "0";
+        this.regDate = LocalDateTime.now();
     }
 
     public void finish() {
         this.status = "3";
+        this.regDate = LocalDateTime.now();
     }
 }

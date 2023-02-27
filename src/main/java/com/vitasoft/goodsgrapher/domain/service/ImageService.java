@@ -52,7 +52,7 @@ public class ImageService {
 
         uploadImage(modelImagesWorkerPath, file, fileName, registrationNumber);
 
-        return new ModelImage(memberId, modelInfo, fileName, fileSize, fileType, displayOrder, brandCode, viewPoint, jsonObject);
+        return new ModelImage(memberId, modelInfo, registrationNumber + "/" + fileName, fileSize, fileType, displayOrder, brandCode, viewPoint, jsonObject);
     }
 
     private String formatFileName(String memberId, ModelInfo modelInfo, DesignInfo designInfo, int displayOrder, String fileType, String brandCode, String viewPoint) {
