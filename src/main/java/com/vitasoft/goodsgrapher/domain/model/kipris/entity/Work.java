@@ -43,7 +43,6 @@ public class Work {
 
     public void reserve() {
         this.status = "1";
-        this.regDate = LocalDateTime.now();
     }
 
     public void start() {
