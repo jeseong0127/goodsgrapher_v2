@@ -195,7 +195,6 @@ public class MetadataService {
 
         DesignInfo designInfo = designInfoRepository.findByRegistrationNumber(modelInfo.getRegistrationNumber());
 
-//        Work work = new Work(memberId, modelSeq);
         Work work = workRepository.findTopByModelSeqAndRegIdOrderByRegDateDesc(modelSeq, memberId);
         work.start();
         workRepository.save(work);

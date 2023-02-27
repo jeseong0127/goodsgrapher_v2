@@ -48,8 +48,9 @@ public class ImageService {
         String fileType = "." + FilenameUtils.getExtension(file.getOriginalFilename());
         String fileName = formatFileName(memberId, modelInfo, designInfo, displayOrder, fileType, brandCode, viewPoint);
         String fileSize = String.valueOf(file.getSize());
+        String registrationNumber = modelInfo.getRegistrationNumber().contains("/") ? modelInfo.getRegistrationNumber().replace("/", "") : modelInfo.getRegistrationNumber();
 
-        uploadImage(modelImagesWorkerPath, file, fileName);
+        uploadImage(modelImagesWorkerPath, file, fileName, registrationNumber);
 
         return new ModelImage(memberId, modelInfo, fileName, fileSize, fileType, displayOrder, brandCode, viewPoint, jsonObject);
     }
@@ -57,7 +58,7 @@ public class ImageService {
     private String formatFileName(String memberId, ModelInfo modelInfo, DesignInfo designInfo, int displayOrder, String fileType, String brandCode, String viewPoint) {
         String formatMetaSeq = String.format("%06d", modelInfo.getModelSeq());
         String[] folderNameParts = {memberId, brandCode, designInfo.getArticleName(), modelInfo.getModelName(), modelInfo.getRegistrationNumber().replaceAll("/", ""), designInfo.getClassCode().contains("|") ? designInfo.getClassCode().split("\\|")[0] : designInfo.getClassCode()};
-        String folderName = designInfo.getClassCode().contains("|") ? designInfo.getClassCode().split("\\|")[0] + "/" + String.join("_", folderNameParts) : designInfo.getClassCode() + "/" + String.join("_", folderNameParts);
+        String folderName = String.join("_", folderNameParts);
         String fileName = "/VS_2023_" + formatMetaSeq + "_" + viewPoint + "_0_" + displayOrder + fileType;
         return folderName + fileName;
     }
@@ -80,10 +81,11 @@ public class ImageService {
         return brandCode;
     }
 
-    private void uploadImage(String imagePath, MultipartFile file, String fileName) {
+    private void uploadImage(String imagePath, MultipartFile file, String fileName, String registrationNumber) {
         try {
-            File directory = new File(imagePath, fileName.substring(0, fileName.lastIndexOf("/")));
-            File image = new File(imagePath, fileName);
+            String parentPath = imagePath + File.separator + registrationNumber;
+            File directory = new File(parentPath, fileName.substring(0, fileName.lastIndexOf("/")));
+            File image = new File(parentPath, fileName);
             FileUtils.forceMkdir(directory);
             file.transferTo(image);
         } catch (IOException e) {
