@@ -30,13 +30,15 @@ public class JwtTokenProvider {
     @Value("${app.jwtExpirationMs}")
     private long jwtExpirationMs;
 
-    public String generateJwtToken(String memberId, MemberRole memberRole) {
+    public String generateJwtToken(String memberId, MemberRole memberRole, char memberAgreeYn, char memberContractYn) {
         SecretKey secretKey = Keys.hmacShaKeyFor(jwtSecret.getBytes(StandardCharsets.UTF_8));
         Date now = new Date();
         Date expireAt = new Date(now.getTime() + jwtExpirationMs);
         return Jwts.builder()
                 .claim("memberId", memberId)
                 .claim("role", "ROLE_" + memberRole.toString())
+                .claim("agreeYn", memberAgreeYn)
+                .claim("contractYn", memberContractYn)
                 .setIssuedAt(now)
                 .setExpiration(expireAt)
                 .signWith(secretKey, SignatureAlgorithm.HS256)

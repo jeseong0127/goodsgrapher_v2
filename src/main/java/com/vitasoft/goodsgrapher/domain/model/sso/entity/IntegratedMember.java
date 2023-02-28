@@ -1,12 +1,6 @@
 package com.vitasoft.goodsgrapher.domain.model.sso.entity;
 
-import com.vitasoft.goodsgrapher.domain.model.enums.MemberRole;
-
 import javax.persistence.Entity;
-import javax.persistence.EnumType;
-import javax.persistence.Enumerated;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Table;
 
@@ -17,11 +11,8 @@ import lombok.RequiredArgsConstructor;
 @Table(name = "com_members")
 @Getter
 @RequiredArgsConstructor
-public class Member {
+public class IntegratedMember {
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Integer memberNo;
-
     private String memberId;
 
     private String memberPw;
@@ -34,12 +25,7 @@ public class Member {
 
     private String memberEmail2;
 
-    private String providerId;
+    private String memberAddress;
 
-    private String subscription;
-
-    private char useYn;
-
-    @Enumerated(EnumType.STRING)
-    private MemberRole memberRole;
+    private String memberAddress2;
 }
