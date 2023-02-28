@@ -1,6 +1,7 @@
 package com.vitasoft.goodsgrapher.application.exception;
 
 import com.vitasoft.goodsgrapher.core.response.ErrorResponse;
+import com.vitasoft.goodsgrapher.domain.exception.member.IntegratedMemberNotFoundException;
 import com.vitasoft.goodsgrapher.domain.exception.member.MemberNotFoundException;
 import com.vitasoft.goodsgrapher.domain.exception.member.MemberNotUseException;
 import com.vitasoft.goodsgrapher.domain.exception.member.NotMatchPasswordException;
@@ -31,5 +32,11 @@ public class MemberExceptionHandler {
     @ResponseStatus(HttpStatus.FORBIDDEN)
     public ErrorResponse handleNotNotUseMember(MemberNotUseException exception) {
         return new ErrorResponse(HttpStatus.FORBIDDEN, "Member-003", exception.getMessage());
+    }
+
+    @ExceptionHandler(IntegratedMemberNotFoundException.class)
+    @ResponseStatus(HttpStatus.UNAUTHORIZED)
+    public ErrorResponse handleNotNotUseMember(IntegratedMemberNotFoundException exception) {
+        return new ErrorResponse(HttpStatus.UNAUTHORIZED, "Member-004", exception.getMessage());
     }
 }
