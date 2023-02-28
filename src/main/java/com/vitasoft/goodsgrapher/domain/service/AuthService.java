@@ -6,11 +6,13 @@ import com.vitasoft.goodsgrapher.application.response.MemberResponse;
 import com.vitasoft.goodsgrapher.application.response.TokenResponse;
 import com.vitasoft.goodsgrapher.core.security.JwtTokenProvider;
 import com.vitasoft.goodsgrapher.core.util.Encoder;
-import com.vitasoft.goodsgrapher.domain.exception.member.MemberNotFoundException;
+import com.vitasoft.goodsgrapher.domain.exception.member.IntegratedMemberNotFoundException;
 import com.vitasoft.goodsgrapher.domain.exception.member.MemberNotUseException;
 import com.vitasoft.goodsgrapher.domain.exception.member.NotMatchPasswordException;
-import com.vitasoft.goodsgrapher.domain.model.sso.entity.Member;
-import com.vitasoft.goodsgrapher.domain.model.sso.repository.MemberRepository;
+import com.vitasoft.goodsgrapher.domain.model.kipris.entity.Member;
+import com.vitasoft.goodsgrapher.domain.model.kipris.repository.MemberRepository;
+import com.vitasoft.goodsgrapher.domain.model.sso.entity.IntegratedMember;
+import com.vitasoft.goodsgrapher.domain.model.sso.repository.IntegratedMemberRepository;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -21,6 +23,8 @@ import org.springframework.transaction.annotation.Transactional;
 @Transactional
 public class AuthService {
 
+    private final IntegratedMemberRepository integratedMemberRepository;
+
     private final MemberRepository memberRepository;
 
     private final JwtTokenProvider jwtTokenProvider;
@@ -28,17 +32,20 @@ public class AuthService {
     private final Encoder encoder;
 
     public LoginResponse login(LoginRequest loginRequest) throws NotMatchPasswordException {
-        Member member = memberRepository.findByMemberId(loginRequest.getMemberId()).orElseThrow(MemberNotFoundException::new);
+        IntegratedMember integratedMember = integratedMemberRepository.findByMemberId(loginRequest.getMemberId()).orElseThrow(IntegratedMemberNotFoundException::new);
+
+        if (!encoder.encrypt("SHA-256", loginRequest.getMemberPw()).equals(integratedMember.getMemberPw()))
+            throw new NotMatchPasswordException();
+
+        Member member = memberRepository.findByMemberId(integratedMember.getMemberId())
+                .orElseGet(() -> memberRepository.save(new Member().signUp(integratedMember)));
 
         if (member.getUseYn() == 'N')
             throw new MemberNotUseException();
 
-        if (!encoder.encrypt("SHA-256", loginRequest.getMemberPw()).equals(member.getMemberPw()))
-            throw new NotMatchPasswordException();
-
         MemberResponse memberResponse = new MemberResponse(member);
 
-        String accessToken = jwtTokenProvider.generateJwtToken(member.getMemberId(), member.getMemberRole());
+        String accessToken = jwtTokenProvider.generateJwtToken(member.getMemberId(), member.getMemberRole(), member.getAgreeYn(), member.getContractYn());
         TokenResponse tokenResponse = new TokenResponse(accessToken);
 
         return new LoginResponse(memberResponse, tokenResponse);

@@ -1,6 +1,6 @@
 package com.vitasoft.goodsgrapher.application.response;
 
-import com.vitasoft.goodsgrapher.domain.model.sso.entity.Member;
+import com.vitasoft.goodsgrapher.domain.model.kipris.entity.Member;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
