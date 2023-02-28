@@ -19,7 +19,6 @@ import java.io.IOException;
 import java.util.Objects;
 
 import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.FilenameUtils;
 import org.json.simple.JSONObject;
@@ -28,7 +27,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
-@Slf4j
 @Service
 @RequiredArgsConstructor
 @Transactional
@@ -44,7 +42,7 @@ public class ImageService {
         int dashIndex = Objects.requireNonNull(file.getOriginalFilename()).lastIndexOf("_");
         int dotIndex = Objects.requireNonNull(file.getOriginalFilename()).lastIndexOf(".");
         String viewPoint = file.getOriginalFilename().substring(dashIndex + 1, dotIndex);
-        String brandCode = formatLastRightHolderName(designInfo.getLastRightHolderName());
+        String brandCode = formatLastRightHolderName(designInfo.getLastRightHolderName(), designInfo.getApplicantName());
         String fileType = "." + FilenameUtils.getExtension(file.getOriginalFilename());
         String fileName = formatFileName(memberId, modelInfo, designInfo, displayOrder, fileType, brandCode, viewPoint);
         String fileSize = String.valueOf(file.getSize());
@@ -63,13 +61,13 @@ public class ImageService {
         return folderName + fileName;
     }
 
-    private String formatLastRightHolderName(String lastRightHolderName) {
+    private String formatLastRightHolderName(String lastRightHolderName, String applicantName) {
         String[] brandNameList = {"애드크런치", "세라젬", "다이슨", "에이치피", "라네즈", "엘지전자", "현대모비스", "미쟝센", "슈피겐", "설화수", "삼성전자", "쓰리쎄븐"};
         String[] brandCodeList = {"ACR", "CRG", "DY", "HP", "LA", "LG", "MOB", "MSC", "SG", "SH", "SS", "TS"};
         int index = 0;
         String brandCode = "ZZ";
         if (lastRightHolderName == null) {
-            return brandCode;
+            return applicantName;
         }
         for (String brandName : brandNameList) {
             if (lastRightHolderName.contains(brandName)) {
