@@ -215,7 +215,7 @@ public class MetadataService {
 
     private JSONArray convertJson(String jsonArrayAsString) {
         try {
-            return (JSONArray) parser.parse(jsonArrayAsString);
+            return (JSONArray) parser.parse(jsonArrayAsString.replaceAll("\\\\", ""));
         } catch (ParseException e) {
             throw new RuntimeException(e);
         }
