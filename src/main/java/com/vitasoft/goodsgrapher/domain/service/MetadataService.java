@@ -34,7 +34,6 @@ import java.util.TreeMap;
 import java.util.stream.Collectors;
 
 import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.io.FileUtils;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
@@ -45,7 +44,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
-@Slf4j
 @Service
 @RequiredArgsConstructor
 @Transactional

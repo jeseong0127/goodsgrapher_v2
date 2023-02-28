@@ -38,9 +38,9 @@ public class SecurityConfig {
                 .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
                 .and()
                 .authorizeRequests()
-//                .antMatchers(PERMIT_SWAGGER_URL_ARRAY).permitAll()
-//                .antMatchers(HttpMethod.POST, "/api/auth/**").permitAll()
-//                .anyRequest().authenticated()
+                .antMatchers(PERMIT_SWAGGER_URL_ARRAY).permitAll()
+                .antMatchers(HttpMethod.POST, "/api/auth/**").permitAll()
+                .anyRequest().authenticated()
                 .anyRequest().permitAll()
                 .and()
                 .addFilterBefore(new JwtAuthenticationFilter(jwtTokenProvider, objectMapper), UsernamePasswordAuthenticationFilter.class);

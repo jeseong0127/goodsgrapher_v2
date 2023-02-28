@@ -16,7 +16,6 @@ import java.util.List;
 import javax.validation.Valid;
 
 import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -30,7 +29,6 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
-@Slf4j
 @RestController
 @RequestMapping("/api/metadata")
 @RequiredArgsConstructor
@@ -115,7 +113,6 @@ public class MetadataController {
         return new ModelImageResponse(metadataService.getMetadataImages(modelSeq, member.getMemberId()));
     }
 
-    //    @PostMapping(consumes = {"multipart/form-data", "application/json" /*MediaType.MULTIPART_FORM_DATA_VALUE, MediaType.APPLICATION_JSON_VALUE*/})
     @PostMapping()
     @ResponseStatus(HttpStatus.CREATED)
     @ApiOperation("메타데이터 작업하기")
@@ -123,7 +120,7 @@ public class MetadataController {
             @MemberInfo AuthenticatedMember member,
             @Valid @ModelAttribute MetadataRequest metadataRequest,
             @RequestPart List<MultipartFile> images
-    ){
+    ) {
         metadataService.uploadMetadata(member.getMemberId(), metadataRequest.getModelSeq(), metadataRequest.getJson(), images);
     }
 
