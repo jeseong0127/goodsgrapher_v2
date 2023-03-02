@@ -41,7 +41,7 @@ public class SecurityConfig {
                 .antMatchers(PERMIT_SWAGGER_URL_ARRAY).permitAll()
                 .antMatchers(HttpMethod.POST, "/api/auth/**").permitAll()
                 .anyRequest().authenticated()
-                .anyRequest().permitAll()
+//                .anyRequest().permitAll()
                 .and()
                 .addFilterBefore(new JwtAuthenticationFilter(jwtTokenProvider, objectMapper), UsernamePasswordAuthenticationFilter.class);
         return http.build();
