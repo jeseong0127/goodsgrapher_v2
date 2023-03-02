@@ -2,6 +2,7 @@ package com.vitasoft.goodsgrapher.domain.service;
 
 import com.vitasoft.goodsgrapher.application.request.DeleteMetadataRequest;
 import com.vitasoft.goodsgrapher.domain.exception.metadata.DuplicationReserveIdException;
+import com.vitasoft.goodsgrapher.domain.exception.metadata.ExceedWorkerCountException;
 import com.vitasoft.goodsgrapher.domain.exception.metadata.ExceededReservedCountLimitException;
 import com.vitasoft.goodsgrapher.domain.exception.metadata.ModelInfoNotFoundException;
 import com.vitasoft.goodsgrapher.domain.model.dto.GetCategoryDto;
@@ -145,6 +146,11 @@ public class MetadataService {
 
         if (worked != null && !Objects.equals(worked.getStatus(), "0"))
             throw new DuplicationReserveIdException(modelSeq);
+
+        int currentWorkerCount = workRepository.countByModelSeqAndStatusNot(modelSeq, "0");
+
+        if (maxReserveCount >= currentWorkerCount)
+            throw new ExceedWorkerCountException();
 
         Work work = new Work(memberId, modelSeq);
         work.reserve();

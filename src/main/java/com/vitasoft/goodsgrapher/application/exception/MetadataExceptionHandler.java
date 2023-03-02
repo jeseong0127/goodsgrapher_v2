@@ -3,6 +3,7 @@ package com.vitasoft.goodsgrapher.application.exception;
 import com.vitasoft.goodsgrapher.core.response.ErrorResponse;
 import com.vitasoft.goodsgrapher.domain.exception.metadata.ArticleFileNotFoundException;
 import com.vitasoft.goodsgrapher.domain.exception.metadata.DuplicationReserveIdException;
+import com.vitasoft.goodsgrapher.domain.exception.metadata.ExceedWorkerCountException;
 import com.vitasoft.goodsgrapher.domain.exception.metadata.ExceededReservedCountLimitException;
 import com.vitasoft.goodsgrapher.domain.exception.metadata.ExistsWorkedMetadataException;
 import com.vitasoft.goodsgrapher.domain.exception.metadata.ModelInfoNotFoundException;
@@ -52,5 +53,11 @@ public class MetadataExceptionHandler {
     @ResponseStatus(HttpStatus.CONFLICT)
     public ErrorResponse handleDuplicationReserveId(DuplicationReserveIdException exception) {
         return new ErrorResponse(HttpStatus.CONFLICT, "Metadata-006", exception.getMessage());
+    }
+
+    @ExceptionHandler(ExceedWorkerCountException.class)
+    @ResponseStatus(HttpStatus.CONFLICT)
+    public ErrorResponse handleExceededReservedCountLimit(ExceedWorkerCountException exception) {
+        return new ErrorResponse(HttpStatus.CONFLICT, "Metadata-007", exception.getMessage());
     }
 }
