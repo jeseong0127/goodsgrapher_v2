@@ -149,7 +149,7 @@ public class MetadataService {
 
         int currentWorkerCount = workRepository.countByModelSeqAndStatusNot(modelSeq, "0");
 
-        if (maxReserveCount >= currentWorkerCount)
+        if (maxReserveCount <= currentWorkerCount)
             throw new ExceedWorkerCountException();
 
         Work work = new Work(memberId, modelSeq);
