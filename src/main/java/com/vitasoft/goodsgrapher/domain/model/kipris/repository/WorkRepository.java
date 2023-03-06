@@ -25,4 +25,6 @@ public interface WorkRepository extends JpaRepository<Work, Integer> {
     List<Work> findAllByRegId(String memberId);
 
     int countByModelSeqAndStatusNot(int modelSeq, String s);
+
+    List<Work> findAllByRegIdOrderByRegDateDesc(String memberId);
 }

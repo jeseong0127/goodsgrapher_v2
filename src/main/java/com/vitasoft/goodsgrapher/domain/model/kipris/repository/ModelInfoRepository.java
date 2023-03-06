@@ -19,4 +19,5 @@ public interface ModelInfoRepository extends JpaRepository<ModelInfo, Integer> {
 
     ModelInfo findTopByRegistrationNumber(String registrationNumber);
 
+    ModelInfo findByModelSeq(int modelSeq);
 }

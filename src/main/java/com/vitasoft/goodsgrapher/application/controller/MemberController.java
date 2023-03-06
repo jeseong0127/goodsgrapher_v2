@@ -3,6 +3,7 @@ package com.vitasoft.goodsgrapher.application.controller;
 import com.vitasoft.goodsgrapher.application.response.AccountDetailResponse;
 import com.vitasoft.goodsgrapher.application.response.AccountsResponse;
 import com.vitasoft.goodsgrapher.application.response.MetadataResponse;
+import com.vitasoft.goodsgrapher.application.response.WorkedLogsResponse;
 import com.vitasoft.goodsgrapher.core.security.AuthenticatedMember;
 import com.vitasoft.goodsgrapher.core.security.MemberInfo;
 import com.vitasoft.goodsgrapher.domain.service.MemberService;
@@ -49,5 +50,14 @@ public class MemberController {
             @PathVariable int modelSeq
     ) {
         return memberService.getAccountDetail(modelSeq, member.getMemberId());
+    }
+
+    @ApiOperation("내 작업 기록 보기")
+    @GetMapping("/worked-logs")
+    @ResponseStatus(HttpStatus.OK)
+    public WorkedLogsResponse getWorkedLogs(
+            @MemberInfo AuthenticatedMember member
+    ) {
+        return new WorkedLogsResponse(memberService.getWorkedLogs(member.getMemberId()));
     }
 }
