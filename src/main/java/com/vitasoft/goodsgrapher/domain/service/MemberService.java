@@ -94,7 +94,9 @@ public class MemberService {
     public List<GetWorkedLogsDto> getWorkedLogs(String memberId) {
         List<GetWorkedLogsDto> getWorkedLogsDtoList = new ArrayList<>();
         workRepository.findAllByRegIdOrderByRegDateDesc(memberId)
-                .forEach(work -> getWorkedLogsDtoList.add(new GetWorkedLogsDto(work, modelInfoRepository.findByModelSeq(work.getModelSeq()))));
+                .forEach(work ->
+                        getWorkedLogsDtoList.add(new GetWorkedLogsDto(work, modelInfoRepository.findByModelSeq(work.getModelSeq())))
+                );
         return getWorkedLogsDtoList;
     }
 }
