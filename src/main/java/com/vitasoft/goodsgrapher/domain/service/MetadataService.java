@@ -75,19 +75,19 @@ public class MetadataService {
                         new GetDesignInfoDto(designInfoRepository.findByRegistrationNumber(modelInfo.getRegistrationNumber()),
                                 designImageRepository.findAllByDesignSeqAndUseYn(designInfoRepository.findByRegistrationNumber(modelInfo.getRegistrationNumber()).getDesignSeq(), "Y")
                                         .stream().map(designImage -> new GetDesignImageDto(designImage.getImgNumber(), designImage.getImgPath(), designImage.getUseYn(), designImage.getDesignImgSeq()))
-                                        .collect(Collectors.toList())))
+                                        .collect(Collectors.toList())), workRepository.countByModelSeqAndStatusNot(modelInfo.getModelSeq(), "0"))
         ).collect(Collectors.toList());
     }
 
     public List<GetMetadataDto> getSearchMetadata(String searchWord, String codeId) {
         cancelExcessReserveTime();
 
-        return modelInfoRepository.findAllByMetadata(codeId, searchWord == null ? "" : searchWord, searchWord, searchWord).stream().map(modelInfo ->
+        return modelInfoRepository.findAllByMetadata(codeId, searchWord == null ? "" : searchWord).stream().map(modelInfo ->
                 new GetMetadataDto(modelInfo,
                         new GetDesignInfoDto(designInfoRepository.findByRegistrationNumber(modelInfo.getRegistrationNumber()),
                                 designImageRepository.findAllByDesignSeqAndUseYn(designInfoRepository.findByRegistrationNumber(modelInfo.getRegistrationNumber()).getDesignSeq(), "Y")
                                         .stream().map(designImage -> new GetDesignImageDto(designImage.getImgNumber(), designImage.getImgPath(), designImage.getUseYn(), designImage.getDesignImgSeq()))
-                                        .collect(Collectors.toList())))
+                                        .collect(Collectors.toList())), workRepository.countByModelSeqAndStatusNot(modelInfo.getModelSeq(), "0"))
         ).collect(Collectors.toList());
     }
 
@@ -109,11 +109,11 @@ public class MetadataService {
             modelInfoList.forEach(modelInfo -> {
                 if (modelInfo.getPathImgGoods() != null && !modelInfo.getPathImgGoods().isEmpty()) {
                     if (modelInfo.getRegistrationNumber().equals(pathName)) {
-                        metadataDtos.add(new GetMetadataDto(modelInfo, "photo", getImageSearchDto, keyValueMap.get(pathImage)));
+                        metadataDtos.add(new GetMetadataDto(modelInfo, "photo", getImageSearchDto, keyValueMap.get(pathImage), workRepository.countByModelSeqAndStatusNot(modelInfo.getModelSeq(), "0")));
                     }
                 } else if (getImageSearchDto.getImgPath() != null && !getImageSearchDto.getImgPath().isEmpty()) {
                     if (modelInfo.getRegistrationNumber().equals(pathName))
-                        metadataDtos.add(new GetMetadataDto(modelInfo, "drawing", getImageSearchDto, keyValueMap.get(pathImage)));
+                        metadataDtos.add(new GetMetadataDto(modelInfo, "drawing", getImageSearchDto, keyValueMap.get(pathImage), workRepository.countByModelSeqAndStatusNot(modelInfo.getModelSeq(), "0")));
                 }
             });
         }
