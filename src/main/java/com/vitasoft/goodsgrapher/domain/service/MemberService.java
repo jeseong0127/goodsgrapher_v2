@@ -6,6 +6,7 @@ import com.vitasoft.goodsgrapher.domain.model.dto.GetAccountsDto;
 import com.vitasoft.goodsgrapher.domain.model.dto.GetDesignImageDto;
 import com.vitasoft.goodsgrapher.domain.model.dto.GetDesignInfoDto;
 import com.vitasoft.goodsgrapher.domain.model.dto.GetMetadataDto;
+import com.vitasoft.goodsgrapher.domain.model.dto.GetWorkedLogsDto;
 import com.vitasoft.goodsgrapher.domain.model.kipris.entity.DesignImage;
 import com.vitasoft.goodsgrapher.domain.model.kipris.entity.DesignInfo;
 import com.vitasoft.goodsgrapher.domain.model.kipris.entity.ModelImage;
@@ -87,5 +88,13 @@ public class MemberService {
             designImages = designImageRepository.findAllByDesignSeqAndUseYn(designInfo.getDesignSeq(), "Y");
         }
         return new AccountDetailResponse(designImages, modelImages);
+    }
+
+    @Transactional(readOnly = true)
+    public List<GetWorkedLogsDto> getWorkedLogs(String memberId) {
+        List<GetWorkedLogsDto> getWorkedLogsDtoList = new ArrayList<>();
+        workRepository.findAllByRegIdOrderByRegDateDesc(memberId)
+                .forEach(work -> getWorkedLogsDtoList.add(new GetWorkedLogsDto(work, modelInfoRepository.findByModelSeq(work.getModelSeq()))));
+        return getWorkedLogsDtoList;
     }
 }
