@@ -26,6 +26,7 @@ public class GetMetadataDto {
     private LocalDateTime reserveDate;
     private String status;
     private GetDesignInfoDto designInfo;
+    private int currentWorkerCount;
 
     public GetMetadataDto(ModelInfo modelInfo) {
         this.modelSeq = modelInfo.getModelSeq();
@@ -38,9 +39,10 @@ public class GetMetadataDto {
         this.pathImg = modelInfo.getPathImgGoods();
     }
 
-    public GetMetadataDto(ModelInfo modelInfo, GetDesignInfoDto designInfo) {
+    public GetMetadataDto(ModelInfo modelInfo, GetDesignInfoDto designInfo, int currentWorkerCount) {
         this(modelInfo);
         this.designInfo = designInfo;
+        this.currentWorkerCount = currentWorkerCount;
     }
 
     public GetMetadataDto(ModelInfo modelInfo, GetDesignInfoDto designInfo, int workedCount, LocalDateTime reserveDate, String status) {
@@ -51,7 +53,7 @@ public class GetMetadataDto {
         this.designInfo = designInfo;
     }
 
-    public GetMetadataDto(ModelInfo modelInfo, String type, GetImageSearchDto getImageSearchDto, String confidence) {
+    public GetMetadataDto(ModelInfo modelInfo, String type, GetImageSearchDto getImageSearchDto, String confidence, int currentWorkerCount) {
         this.modelSeq = modelInfo.getModelSeq();
         this.productCategory = modelInfo.getProductCategory();
         this.articleName = modelInfo.getArticleName();
@@ -64,5 +66,6 @@ public class GetMetadataDto {
         this.confidence = confidence;
         this.lastRightHolderName = getImageSearchDto.getLastRightHolderName();
         this.registrationNumber = getImageSearchDto.getRegistrationNumber();
+        this.currentWorkerCount = currentWorkerCount;
     }
 }
