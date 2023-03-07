@@ -2,6 +2,7 @@ package com.vitasoft.goodsgrapher.domain.service;
 
 import com.vitasoft.goodsgrapher.application.response.AccountDetailResponse;
 import com.vitasoft.goodsgrapher.application.response.AccountsResponse;
+import com.vitasoft.goodsgrapher.domain.exception.image.CannotUploadImageException;
 import com.vitasoft.goodsgrapher.domain.exception.member.MemberNotFoundException;
 import com.vitasoft.goodsgrapher.domain.model.dto.GetAccountsDto;
 import com.vitasoft.goodsgrapher.domain.model.dto.GetDesignImageDto;
@@ -22,6 +23,7 @@ import com.vitasoft.goodsgrapher.domain.model.kipris.repository.ModelInfoReposit
 import com.vitasoft.goodsgrapher.domain.model.kipris.repository.WorkRepository;
 
 import java.io.File;
+import java.io.IOException;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
@@ -39,7 +41,6 @@ import org.springframework.web.multipart.MultipartFile;
 @RequiredArgsConstructor
 @Transactional
 public class MemberService {
-    private static final DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern("yyyyMMdd");
     private static final DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("yyyyMMddHHmmssSSSSSS");
 
     @Value("${image.upload-path.pdfContract}")
@@ -123,17 +124,21 @@ public class MemberService {
                 .orElseThrow(MemberNotFoundException::new);
 
         LocalDateTime now = LocalDateTime.now();
-        String fileName = uploadPdf(file, now);
+        String time = now.format(dateTimeFormatter);
+        String fileType = "." + FilenameUtils.getExtension(file.getOriginalFilename());
+        String fileName = memberId + "_" + time + fileType;
+
+        uploadPdf(file, fileName);
         member.writeContract(pdfContractPath + File.separator + fileName, now);
     }
 
-    public String uploadPdf(MultipartFile file, LocalDateTime now) {
-        String date = now.format(dateFormatter);
-        String time = now.format(dateTimeFormatter);
-        String fileType = "." + FilenameUtils.getExtension(file.getOriginalFilename());
-        String fileName = date + "/" + time + fileType;
-        imageService.uploadImage(pdfContractPath, file, fileName);
-        return fileName;
+    public void uploadPdf(MultipartFile file, String fileName) {
+        try {
+            File pdf = new File(pdfContractPath, fileName);
+            file.transferTo(pdf);
+        } catch (IOException e) {
+            throw new CannotUploadImageException();
+        }
     }
 
     public void writeAgreements(String memberId) {
