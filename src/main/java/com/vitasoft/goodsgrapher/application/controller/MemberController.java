@@ -13,9 +13,12 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.multipart.MultipartFile;
 
 @RestController
 @RequestMapping("/api/member")
@@ -59,5 +62,15 @@ public class MemberController {
             @MemberInfo AuthenticatedMember member
     ) {
         return new WorkedLogsResponse(memberService.getWorkedLogs(member.getMemberId()));
+    }
+
+    @ApiOperation("계약서 작성하기")
+    @PostMapping("/contracts")
+    @ResponseStatus(HttpStatus.OK)
+    public void writeContracts(
+            @MemberInfo AuthenticatedMember member,
+            @RequestPart MultipartFile file
+    ) {
+        memberService.writeContracts(member.getMemberId(), file);
     }
 }

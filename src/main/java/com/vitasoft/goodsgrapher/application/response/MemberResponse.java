@@ -16,13 +16,13 @@ public class MemberResponse {
 
     private final char agreeYn;
 
-    private final char contactYn;
+    private final char contractYn;
 
     public MemberResponse(Member member) {
         this.memberId = member.getMemberId();
         this.memberName = member.getMemberName();
         this.memberPhone = member.getMemberPhone();
         this.agreeYn = member.getAgreeYn();
-        this.contactYn = member.getContractYn();
+        this.contractYn = member.getContractYn();
     }
 }
