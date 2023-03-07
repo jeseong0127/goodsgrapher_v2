@@ -113,9 +113,9 @@ public class MetadataController {
         return new ModelImageResponse(metadataService.getMetadataImages(modelSeq, member.getMemberId()));
     }
 
+    @ApiOperation("메타데이터 작업하기")
     @PostMapping()
     @ResponseStatus(HttpStatus.CREATED)
-    @ApiOperation("메타데이터 작업하기")
     public void uploadMetadata(
             @MemberInfo AuthenticatedMember member,
             @Valid @ModelAttribute MetadataRequest metadataRequest,

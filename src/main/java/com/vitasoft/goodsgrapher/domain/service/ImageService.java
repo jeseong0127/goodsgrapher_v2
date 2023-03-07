@@ -48,7 +48,7 @@ public class ImageService {
         String fileSize = String.valueOf(file.getSize());
         String registrationNumber = modelInfo.getRegistrationNumber().contains("/") ? modelInfo.getRegistrationNumber().replace("/", "") : modelInfo.getRegistrationNumber();
 
-        uploadImage(modelImagesWorkerPath, file, fileName, registrationNumber);
+        uploadImage(modelImagesWorkerPath + File.separator + registrationNumber, file, fileName);
 
         return new ModelImage(memberId, modelInfo, registrationNumber + "/" + fileName, fileSize, fileType, displayOrder, brandCode, viewPoint, jsonObject);
     }
@@ -79,11 +79,10 @@ public class ImageService {
         return brandCode;
     }
 
-    private void uploadImage(String imagePath, MultipartFile file, String fileName, String registrationNumber) {
+    public void uploadImage(String imagePath, MultipartFile file, String fileName) {
         try {
-            String parentPath = imagePath + File.separator + registrationNumber;
-            File directory = new File(parentPath, fileName.substring(0, fileName.lastIndexOf("/")));
-            File image = new File(parentPath, fileName);
+            File directory = new File(imagePath, fileName.substring(0, fileName.lastIndexOf("/")));
+            File image = new File(imagePath, fileName);
             FileUtils.forceMkdir(directory);
             file.transferTo(image);
         } catch (IOException e) {

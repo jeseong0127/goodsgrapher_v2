@@ -53,6 +53,7 @@ app:
 image:
   upload-path:
     modelImagesWorker: ${MODEL_IMAGES_WORKER}
+    pdfContract: ${PDF_CONTRACT}
 
 logging:
   level:
