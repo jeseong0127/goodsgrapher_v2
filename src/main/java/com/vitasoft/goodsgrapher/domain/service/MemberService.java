@@ -142,4 +142,11 @@ public class MemberService {
 
         member.writeAgreements();
     }
+
+    public byte[] viewContracts(String memberId) {
+        Member member = memberRepository.findByMemberId(memberId)
+                .orElseThrow(MemberNotFoundException::new);
+
+        return imageService.viewImage(new File(member.getContractPath()));
+    }
 }
