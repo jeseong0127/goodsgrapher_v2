@@ -73,4 +73,13 @@ public class MemberController {
     ) {
         memberService.writeContracts(member.getMemberId(), file);
     }
+
+    @ApiOperation("약관 동의하기")
+    @PostMapping("/agreements")
+    @ResponseStatus(HttpStatus.OK)
+    public void writeAgreements(
+            @MemberInfo AuthenticatedMember member
+    ) {
+        memberService.writeAgreements(member.getMemberId());
+    }
 }

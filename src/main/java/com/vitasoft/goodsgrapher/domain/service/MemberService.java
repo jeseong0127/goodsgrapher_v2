@@ -135,4 +135,11 @@ public class MemberService {
         imageService.uploadImage(pdfContractPath, file, fileName);
         return fileName;
     }
+
+    public void writeAgreements(String memberId) {
+        Member member = memberRepository.findByMemberId(memberId)
+                .orElseThrow(MemberNotFoundException::new);
+
+        member.writeAgreements();
+    }
 }
