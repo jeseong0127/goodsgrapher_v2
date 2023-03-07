@@ -56,7 +56,7 @@ public class Member {
 
     private char agreeYn;
 
-    private String agreeDate;
+    private LocalDateTime agreeDate;
 
     private char contractYn;
 
@@ -86,5 +86,10 @@ public class Member {
         this.contractYn = 'Y';
         this.contractDate = now;
         this.contractPath = contractPath;
+    }
+
+    public void writeAgreements() {
+        this.agreeYn = 'Y';
+        this.agreeDate = LocalDateTime.now();
     }
 }
