@@ -104,7 +104,7 @@ public class ImageService {
         return this.viewImage(image);
     }
 
-    private byte[] viewImage(File image) {
+    public byte[] viewImage(File image) {
         try (
                 FileInputStream inputStream = new FileInputStream(image);
                 ByteArrayOutputStream outputStream = new ByteArrayOutputStream()

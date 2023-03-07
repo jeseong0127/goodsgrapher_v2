@@ -11,6 +11,7 @@ import io.swagger.annotations.ApiOperation;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -81,5 +82,14 @@ public class MemberController {
             @MemberInfo AuthenticatedMember member
     ) {
         memberService.writeAgreements(member.getMemberId());
+    }
+
+    @ApiOperation("계약서 보기")
+    @GetMapping(value = "/contracts", produces = MediaType.APPLICATION_PDF_VALUE)
+    @ResponseStatus(HttpStatus.OK)
+    public byte[] viewContracts(
+            @MemberInfo AuthenticatedMember member
+    ) {
+        return memberService.viewContracts(member.getMemberId());
     }
 }
