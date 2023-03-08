@@ -1,6 +1,7 @@
 package com.vitasoft.goodsgrapher.application.exception;
 
 import com.vitasoft.goodsgrapher.core.response.ErrorResponse;
+import com.vitasoft.goodsgrapher.domain.exception.image.CannotDeleteImageException;
 import com.vitasoft.goodsgrapher.domain.exception.image.CannotUploadImageException;
 import com.vitasoft.goodsgrapher.domain.exception.image.CannotViewImageException;
 import com.vitasoft.goodsgrapher.domain.exception.image.ImageNotFoundException;
@@ -32,5 +33,11 @@ public class ImageExceptionHandler {
     @ResponseStatus(HttpStatus.NOT_FOUND)
     public ErrorResponse handleImageNotFound(ImageNotFoundException exception) {
         return new ErrorResponse(HttpStatus.NOT_FOUND, "Image-003", exception.getMessage());
+    }
+
+    @ExceptionHandler(CannotDeleteImageException.class)
+    @ResponseStatus(HttpStatus.CONFLICT)
+    public ErrorResponse handleCannotDeleteImage(CannotDeleteImageException exception) {
+        return new ErrorResponse(HttpStatus.CONFLICT, "Image-004", exception.getMessage());
     }
 }

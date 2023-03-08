@@ -1,6 +1,7 @@
 package com.vitasoft.goodsgrapher.domain.service;
 
 import com.vitasoft.goodsgrapher.application.request.DeleteMetadataRequest;
+import com.vitasoft.goodsgrapher.domain.exception.image.CannotDeleteImageException;
 import com.vitasoft.goodsgrapher.domain.exception.metadata.DuplicationReserveIdException;
 import com.vitasoft.goodsgrapher.domain.exception.metadata.ExceedWorkerCountException;
 import com.vitasoft.goodsgrapher.domain.exception.metadata.ExceededReservedCountLimitException;
@@ -282,7 +283,7 @@ public class MetadataService {
                     try {
                         FileUtils.forceDelete(deletedFile);
                     } catch (IOException e) {
-                        throw new RuntimeException(e);
+                        throw new CannotDeleteImageException();
                     }
                 });
     }
