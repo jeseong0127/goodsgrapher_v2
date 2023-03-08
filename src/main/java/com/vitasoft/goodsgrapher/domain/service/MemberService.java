@@ -154,4 +154,10 @@ public class MemberService {
 
         return imageService.viewImage(new File(member.getContractPath()));
     }
+
+    public byte[] viewDefaultContracts() {
+        String defaultPath = "/uploads/pdf_contract_worker/default.pdf";
+
+        return imageService.viewImage(new File(defaultPath));
+    }
 }
