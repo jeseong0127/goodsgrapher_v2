@@ -16,7 +16,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestPart;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
@@ -65,12 +65,12 @@ public class MemberController {
         return new WorkedLogsResponse(memberService.getWorkedLogs(member.getMemberId()));
     }
 
-    @ApiOperation("계약서 작성하기")
+    @ApiOperation("내 계약서 작성하기")
     @PostMapping("/contracts")
     @ResponseStatus(HttpStatus.OK)
     public void writeContracts(
             @MemberInfo AuthenticatedMember member,
-            @RequestPart MultipartFile file
+            @RequestParam MultipartFile file
     ) {
         memberService.writeContracts(member.getMemberId(), file);
     }
@@ -84,12 +84,20 @@ public class MemberController {
         memberService.writeAgreements(member.getMemberId());
     }
 
-    @ApiOperation("계약서 보기")
+    @ApiOperation("내 계약서 조회하기")
     @GetMapping(value = "/contracts", produces = MediaType.APPLICATION_PDF_VALUE)
     @ResponseStatus(HttpStatus.OK)
     public byte[] viewContracts(
             @MemberInfo AuthenticatedMember member
     ) {
         return memberService.viewContracts(member.getMemberId());
+    }
+
+    @ApiOperation("기본 계약서 조회하기")
+    @GetMapping(value = "/default-contracts", produces = MediaType.APPLICATION_PDF_VALUE)
+    @ResponseStatus(HttpStatus.OK)
+    public byte[] viewDefaultContracts(
+    ) {
+        return memberService.viewDefaultContracts();
     }
 }
