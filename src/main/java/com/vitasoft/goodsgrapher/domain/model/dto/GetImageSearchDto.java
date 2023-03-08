@@ -1,7 +1,6 @@
 package com.vitasoft.goodsgrapher.domain.model.dto;
 
 import lombok.AllArgsConstructor;
-import lombok.Data;
 import lombok.Getter;
 
 @AllArgsConstructor
@@ -13,11 +12,3 @@ public class GetImageSearchDto {
 
     private final String lastRightHolderName;
 }
-
-//public interface GetImageSearchProjection {
-//    String getImgPath();
-//
-//    String getRregistrationNumber;
-//
-//    String lastRightHolderName;
-//}
