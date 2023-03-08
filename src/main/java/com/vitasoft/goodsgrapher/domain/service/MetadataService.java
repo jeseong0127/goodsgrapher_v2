@@ -72,10 +72,8 @@ public class MetadataService {
     public List<GetMetadataDto> getMetadataList() {
         return modelInfoRepository.findAll().stream().map(modelInfo ->
                 new GetMetadataDto(modelInfo,
-                        new GetDesignInfoDto(designInfoRepository.findByRegistrationNumber(modelInfo.getRegistrationNumber()),
-                                designImageRepository.findAllByDesignSeqAndUseYn(designInfoRepository.findByRegistrationNumber(modelInfo.getRegistrationNumber()).getDesignSeq(), "Y")
-                                        .stream().map(designImage -> new GetDesignImageDto(designImage.getImgNumber(), designImage.getImgPath(), designImage.getUseYn(), designImage.getDesignImgSeq()))
-                                        .collect(Collectors.toList())), workRepository.countByModelSeqAndStatusNot(modelInfo.getModelSeq(), "0"))
+                        new GetDesignInfoDto(designInfoRepository.findByRegistrationNumber(modelInfo.getRegistrationNumber())),
+                        workRepository.countByModelSeqAndStatusNot(modelInfo.getModelSeq(), "0"))
         ).collect(Collectors.toList());
     }
 
@@ -84,10 +82,8 @@ public class MetadataService {
 
         return modelInfoRepository.findAllByMetadata(codeId, searchWord == null ? "" : searchWord).stream().map(modelInfo ->
                 new GetMetadataDto(modelInfo,
-                        new GetDesignInfoDto(designInfoRepository.findByRegistrationNumber(modelInfo.getRegistrationNumber()),
-                                designImageRepository.findAllByDesignSeqAndUseYn(designInfoRepository.findByRegistrationNumber(modelInfo.getRegistrationNumber()).getDesignSeq(), "Y")
-                                        .stream().map(designImage -> new GetDesignImageDto(designImage.getImgNumber(), designImage.getImgPath(), designImage.getUseYn(), designImage.getDesignImgSeq()))
-                                        .collect(Collectors.toList())), workRepository.countByModelSeqAndStatusNot(modelInfo.getModelSeq(), "0"))
+                        new GetDesignInfoDto(designInfoRepository.findByRegistrationNumber(modelInfo.getRegistrationNumber())),
+                        workRepository.countByModelSeqAndStatusNot(modelInfo.getModelSeq(), "0"))
         ).collect(Collectors.toList());
     }
 

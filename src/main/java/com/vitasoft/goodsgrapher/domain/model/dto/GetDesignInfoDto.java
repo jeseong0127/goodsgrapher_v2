@@ -58,4 +58,28 @@ public class GetDesignInfoDto {
         this.updId = designInfo.getUpdId();
         this.designImages = designImages;
     }
+
+    public GetDesignInfoDto(DesignInfo designInfo) {
+        this.agentAddress = designInfo.getAgentAddress();
+        this.agentName = designInfo.getAgentName();
+        this.applicantAddress = designInfo.getApplicantAddress();
+        this.applicantName = designInfo.getApplicantName();
+        this.applicationNumber = designInfo.getApplicationNumber();
+        this.articleName = designInfo.getArticleName();
+        this.classCode = designInfo.getClassCode();
+        this.classCodeInt = designInfo.getClassCodeInt();
+        this.designNumber = designInfo.getDesignNumber();
+        this.designSeq = designInfo.getDesignSeq();
+        this.etc = designInfo.getEtc();
+        this.imgPath = designInfo.getImgPath();
+        this.imgUrl = designInfo.getImgUrl();
+        this.lastRightHolderAddress = designInfo.getLastRightHolderAddress();
+        this.lastRightHolderName = designInfo.getLastRightHolderName();
+        this.openDesignStatus = designInfo.getOpenDesignStatus();
+        this.regReferenceNumber = designInfo.getRegReferenceNumber();
+        this.registrationDate = designInfo.getRegistrationDate();
+        this.registrationNumber = designInfo.getRegistrationNumber();
+        this.updDate = designInfo.getUpdDate();
+        this.updId = designInfo.getUpdId();
+    }
 }
