@@ -3,6 +3,7 @@ package com.vitasoft.goodsgrapher.domain.model.kipris.entity;
 import com.vitasoft.goodsgrapher.domain.model.enums.MemberRole;
 import com.vitasoft.goodsgrapher.domain.model.sso.entity.IntegratedMember;
 
+import java.time.Clock;
 import java.time.LocalDateTime;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
@@ -82,9 +83,9 @@ public class Member {
         return this;
     }
 
-    public void writeContract(String contractPath, LocalDateTime now) {
+    public void writeContract(String contractPath) {
         this.contractYn = 'Y';
-        this.contractDate = now;
+        this.contractDate = LocalDateTime.now(Clock.systemDefaultZone());
         this.contractPath = contractPath;
     }
 

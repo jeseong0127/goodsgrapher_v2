@@ -31,7 +31,7 @@ public class AuthService {
 
     private final Encoder encoder;
 
-    public LoginResponse login(LoginRequest loginRequest) throws NotMatchPasswordException {
+    public LoginResponse login(LoginRequest loginRequest) {
         IntegratedMember integratedMember = integratedMemberRepository.findByMemberId(loginRequest.getMemberId()).orElseThrow(IntegratedMemberNotFoundException::new);
 
         if (!encoder.encrypt("SHA-256", loginRequest.getMemberPw()).equals(integratedMember.getMemberPw()))
