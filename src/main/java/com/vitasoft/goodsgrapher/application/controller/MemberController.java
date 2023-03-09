@@ -1,5 +1,6 @@
 package com.vitasoft.goodsgrapher.application.controller;
 
+import com.vitasoft.goodsgrapher.application.request.ContractRequest;
 import com.vitasoft.goodsgrapher.application.response.AccountDetailResponse;
 import com.vitasoft.goodsgrapher.application.response.AccountsResponse;
 import com.vitasoft.goodsgrapher.application.response.MetadataResponse;
@@ -9,17 +10,18 @@ import com.vitasoft.goodsgrapher.core.security.MemberInfo;
 import com.vitasoft.goodsgrapher.domain.service.MemberService;
 import io.swagger.annotations.ApiOperation;
 
+import java.io.IOException;
+
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.multipart.MultipartFile;
 
 @RestController
 @RequestMapping("/api/member")
@@ -66,13 +68,13 @@ public class MemberController {
     }
 
     @ApiOperation("내 계약서 작성하기")
-    @PostMapping("/contracts")
+    @PostMapping(value = "/contracts", produces = MediaType.APPLICATION_OCTET_STREAM_VALUE)
     @ResponseStatus(HttpStatus.OK)
     public void writeContracts(
             @MemberInfo AuthenticatedMember member,
-            @RequestPart MultipartFile file
-    ) {
-        memberService.writeContracts(member.getMemberId(), file);
+            @RequestBody ContractRequest request
+    ) throws IOException {
+        memberService.writeContracts(member.getMemberId(), request.getBase64());
     }
 
     @ApiOperation("약관 동의하기")

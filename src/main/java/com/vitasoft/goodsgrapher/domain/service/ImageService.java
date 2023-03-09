@@ -35,7 +35,9 @@ public class ImageService {
     private String modelImagesWorkerPath;
 
     private final ModelImageRepository modelImageRepository;
+
     private final DesignImageRepository designImageRepository;
+
     private final ModelInfoRepository modelInfoRepository;
 
     public ModelImage uploadMetadataImage(String memberId, ModelInfo modelInfo, MultipartFile file, int displayOrder, DesignInfo designInfo, JSONObject jsonObject) {

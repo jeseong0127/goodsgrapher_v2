@@ -2,7 +2,6 @@ package com.vitasoft.goodsgrapher.domain.service;
 
 import com.vitasoft.goodsgrapher.application.response.AccountDetailResponse;
 import com.vitasoft.goodsgrapher.application.response.AccountsResponse;
-import com.vitasoft.goodsgrapher.domain.exception.image.CannotUploadImageException;
 import com.vitasoft.goodsgrapher.domain.exception.member.MemberNotFoundException;
 import com.vitasoft.goodsgrapher.domain.model.dto.GetAccountsDto;
 import com.vitasoft.goodsgrapher.domain.model.dto.GetDesignImageDto;
@@ -24,18 +23,19 @@ import com.vitasoft.goodsgrapher.domain.model.kipris.repository.WorkRepository;
 
 import java.io.File;
 import java.io.IOException;
+import java.time.Clock;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
+import java.util.Base64;
 import java.util.List;
 import java.util.stream.Collectors;
 
 import lombok.RequiredArgsConstructor;
-import org.apache.commons.io.FilenameUtils;
+import org.apache.commons.io.FileUtils;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.multipart.MultipartFile;
 
 @Service
 @RequiredArgsConstructor
@@ -119,26 +119,19 @@ public class MemberService {
         return getWorkedLogsDtoList;
     }
 
-    public void writeContracts(String memberId, MultipartFile file) {
+    public void writeContracts(String memberId, String base64) throws IOException {
         Member member = memberRepository.findByMemberId(memberId)
                 .orElseThrow(MemberNotFoundException::new);
 
-        LocalDateTime now = LocalDateTime.now();
+        LocalDateTime now = LocalDateTime.now(Clock.systemDefaultZone());
         String time = now.format(dateTimeFormatter);
-        String fileType = "." + FilenameUtils.getExtension(file.getOriginalFilename());
-        String fileName = memberId + "_" + time + fileType;
+        String fileName = memberId + "_" + time + ".pdf";
 
-        uploadPdf(file, fileName);
-        member.writeContract(pdfContractPath + File.separator + fileName, now);
-    }
+        File pdf = new File(pdfContractPath, fileName);
+        byte[] bytes = Base64.getDecoder().decode(base64);
+        FileUtils.writeByteArrayToFile(pdf, bytes);
 
-    public void uploadPdf(MultipartFile file, String fileName) {
-        try {
-            File pdf = new File(pdfContractPath, fileName);
-            file.transferTo(pdf);
-        } catch (IOException e) {
-            throw new CannotUploadImageException();
-        }
+        member.writeContract(pdf.getAbsolutePath(), now);
     }
 
     public void writeAgreements(String memberId) {
