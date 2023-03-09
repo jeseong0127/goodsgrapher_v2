@@ -1,8 +1,10 @@
 package com.vitasoft.goodsgrapher.application.request;
 
-import lombok.Data;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
 
-@Data
+@NoArgsConstructor
+@Getter
 public class ContractRequest {
     private String base64;
 }

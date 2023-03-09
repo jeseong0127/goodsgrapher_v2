@@ -10,8 +10,6 @@ import com.vitasoft.goodsgrapher.core.security.MemberInfo;
 import com.vitasoft.goodsgrapher.domain.service.MemberService;
 import io.swagger.annotations.ApiOperation;
 
-import java.io.IOException;
-
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -68,12 +66,12 @@ public class MemberController {
     }
 
     @ApiOperation("내 계약서 작성하기")
-    @PostMapping(value = "/contracts", produces = MediaType.APPLICATION_OCTET_STREAM_VALUE)
+    @PostMapping("/contracts")
     @ResponseStatus(HttpStatus.OK)
     public void writeContracts(
             @MemberInfo AuthenticatedMember member,
             @RequestBody ContractRequest request
-    ) throws IOException {
+    ) {
         memberService.writeContracts(member.getMemberId(), request.getBase64());
     }
 

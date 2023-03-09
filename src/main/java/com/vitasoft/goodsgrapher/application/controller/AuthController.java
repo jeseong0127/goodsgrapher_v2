@@ -2,7 +2,6 @@ package com.vitasoft.goodsgrapher.application.controller;
 
 import com.vitasoft.goodsgrapher.application.request.LoginRequest;
 import com.vitasoft.goodsgrapher.application.response.LoginResponse;
-import com.vitasoft.goodsgrapher.domain.exception.member.NotMatchPasswordException;
 import com.vitasoft.goodsgrapher.domain.service.AuthService;
 import io.swagger.annotations.ApiOperation;
 
@@ -26,7 +25,7 @@ public class AuthController {
     @ResponseStatus(HttpStatus.OK)
     public LoginResponse login(
             @RequestBody LoginRequest loginRequest
-    ) throws NotMatchPasswordException {
+    ) {
         return authService.login(loginRequest);
     }
 }
