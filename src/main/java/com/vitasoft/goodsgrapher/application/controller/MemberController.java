@@ -67,7 +67,7 @@ public class MemberController {
 
     @ApiOperation("내 계약서 작성하기")
     @PostMapping("/contracts")
-    @ResponseStatus(HttpStatus.OK)
+    @ResponseStatus(HttpStatus.CREATED)
     public void writeContracts(
             @MemberInfo AuthenticatedMember member,
             @RequestBody ContractRequest request
@@ -77,7 +77,7 @@ public class MemberController {
 
     @ApiOperation("약관 동의하기")
     @PostMapping("/agreements")
-    @ResponseStatus(HttpStatus.OK)
+    @ResponseStatus(HttpStatus.CREATED)
     public void writeAgreements(
             @MemberInfo AuthenticatedMember member
     ) {
