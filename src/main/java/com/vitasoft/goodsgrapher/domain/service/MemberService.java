@@ -124,7 +124,7 @@ public class MemberService {
         File pdf = new File(pdfContractPath, fileName);
 
         writeByteArrayToFile(pdf, base64);
-        member.writeContract(pdf.getAbsolutePath());
+        member.writeContract(pdf.getName());
     }
 
     private void writeByteArrayToFile(File pdf, String base64) {
@@ -147,7 +147,7 @@ public class MemberService {
         Member member = memberRepository.findByMemberId(memberId)
                 .orElseThrow(MemberNotFoundException::new);
 
-        return imageService.viewImage(new File(member.getContractPath()));
+        return imageService.viewImage(new File(pdfContractPath, member.getContractPath()));
     }
 
     public byte[] viewDefaultContracts() {
