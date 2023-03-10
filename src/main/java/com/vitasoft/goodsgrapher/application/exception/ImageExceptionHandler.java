@@ -3,6 +3,7 @@ package com.vitasoft.goodsgrapher.application.exception;
 import com.vitasoft.goodsgrapher.core.response.ErrorResponse;
 import com.vitasoft.goodsgrapher.domain.exception.image.CannotDeleteImageException;
 import com.vitasoft.goodsgrapher.domain.exception.image.CannotUploadImageException;
+import com.vitasoft.goodsgrapher.domain.exception.image.CannotUploadPdfException;
 import com.vitasoft.goodsgrapher.domain.exception.image.CannotViewImageException;
 import com.vitasoft.goodsgrapher.domain.exception.image.ImageNotFoundException;
 
@@ -39,5 +40,11 @@ public class ImageExceptionHandler {
     @ResponseStatus(HttpStatus.CONFLICT)
     public ErrorResponse handleCannotDeleteImage(CannotDeleteImageException exception) {
         return new ErrorResponse(HttpStatus.CONFLICT, "Image-004", exception.getMessage());
+    }
+
+    @ExceptionHandler(CannotUploadPdfException.class)
+    @ResponseStatus(HttpStatus.CONFLICT)
+    public ErrorResponse handleCannotUploadPdf(CannotUploadPdfException exception) {
+        return new ErrorResponse(HttpStatus.CONFLICT, "Image-005", exception.getMessage());
     }
 }
