@@ -26,6 +26,7 @@ import com.vitasoft.goodsgrapher.domain.model.kipris.repository.WorkRepository;
 
 import java.io.File;
 import java.io.IOException;
+import java.time.Clock;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -127,7 +128,7 @@ public class MetadataService {
     }
 
     public void cancelExcessReserveTime() {
-        LocalDateTime now = LocalDateTime.now();
+        LocalDateTime now = LocalDateTime.now(Clock.systemDefaultZone());
 
         workRepository.findAllByStatus("1").stream()
                 .filter(work -> now.minusDays(2).isAfter(work.getRegDate()))

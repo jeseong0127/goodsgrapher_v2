@@ -91,6 +91,6 @@ public class Member {
 
     public void writeAgreements() {
         this.agreeYn = 'Y';
-        this.agreeDate = LocalDateTime.now();
+        this.agreeDate = LocalDateTime.now(Clock.systemDefaultZone());
     }
 }

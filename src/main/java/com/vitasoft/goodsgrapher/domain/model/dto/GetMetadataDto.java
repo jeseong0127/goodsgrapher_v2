@@ -19,7 +19,7 @@ public class GetMetadataDto {
     private final String regId;
     private final LocalDateTime regDate;
     private final String pathImg;
-    private String registrationNumber;
+    private final String registrationNumber;
     private String lastRightHolderName;
     private String confidence;
     private int workedCount;
@@ -37,6 +37,7 @@ public class GetMetadataDto {
         this.regId = modelInfo.getRegId();
         this.regDate = modelInfo.getRegDate();
         this.pathImg = modelInfo.getPathImgGoods();
+        this.registrationNumber = modelInfo.getRegistrationNumber();
     }
 
     public GetMetadataDto(ModelInfo modelInfo, GetDesignInfoDto designInfo, int currentWorkerCount) {
