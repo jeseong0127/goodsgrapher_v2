@@ -82,11 +82,19 @@ public class MetadataService {
     public List<GetMetadataDto> getSearchMetadata(String searchWord, String codeId) {
         cancelExcessReserveTime();
 
-        return modelInfoRepository.findAllByMetadata(codeId, searchWord == null ? "" : searchWord).stream().map(modelInfo ->
-                new GetMetadataDto(modelInfo,
-                        new GetDesignInfoDto(designInfoRepository.findByRegistrationNumber(modelInfo.getRegistrationNumber())),
-                        workRepository.countByModelSeqAndStatusNot(modelInfo.getModelSeq(), "0"))
-        ).collect(Collectors.toList());
+        List<GetMetadataDto> metadataDtos = new ArrayList<>();
+
+        modelInfoRepository.findAllByMetadata(codeId, searchWord == null ? "" : searchWord)
+                .forEach(modelInfo -> {
+                    GetImageSearchDto getImageSearchDto = designInfoRepository.findDistinctByRegistrationNumber(modelInfo.getRegistrationNumber());
+                    if (modelInfo.getPathImgGoods() != null && !modelInfo.getPathImgGoods().isEmpty()) {
+                        metadataDtos.add(new GetMetadataDto(modelInfo, "photo", getImageSearchDto, workRepository.countByModelSeqAndStatusNot(modelInfo.getModelSeq(), "0")));
+                    } else if (getImageSearchDto.getImgPath() != null && !getImageSearchDto.getImgPath().isEmpty()) {
+                        metadataDtos.add(new GetMetadataDto(modelInfo, "drawing", getImageSearchDto, workRepository.countByModelSeqAndStatusNot(modelInfo.getModelSeq(), "0")));
+                    }
+                });
+
+        return metadataDtos;
     }
 
     public List<GetMetadataDto> getImageSearchMetadata(List<String> images, List<String> confidence) {

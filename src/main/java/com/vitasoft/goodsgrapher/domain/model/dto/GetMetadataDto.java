@@ -69,4 +69,20 @@ public class GetMetadataDto {
         this.registrationNumber = getImageSearchDto.getRegistrationNumber();
         this.currentWorkerCount = currentWorkerCount;
     }
+
+    public GetMetadataDto(ModelInfo modelInfo, String type, GetImageSearchDto getImageSearchDto, int currentWorkerCount) {
+        this.modelSeq = modelInfo.getModelSeq();
+        this.productCategory = modelInfo.getProductCategory();
+        this.articleName = modelInfo.getArticleName();
+        this.modelName = modelInfo.getModelName();
+        this.companyName = modelInfo.getCompanyName();
+        this.regId = modelInfo.getRegId();
+        this.regDate = modelInfo.getRegDate();
+        this.pathImg = getImageSearchDto.getImgPath();
+        this.type = type;
+        this.lastRightHolderName = getImageSearchDto.getLastRightHolderName();
+        this.registrationNumber = getImageSearchDto.getRegistrationNumber();
+        this.currentWorkerCount = currentWorkerCount;
+    }
+
 }
