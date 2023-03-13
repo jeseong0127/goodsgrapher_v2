@@ -11,7 +11,6 @@ import com.vitasoft.goodsgrapher.core.security.MemberInfo;
 import com.vitasoft.goodsgrapher.domain.service.MetadataService;
 import io.swagger.annotations.ApiOperation;
 
-import java.io.IOException;
 import java.util.List;
 import javax.validation.Valid;
 
@@ -93,14 +92,14 @@ public class MetadataController {
         return new MetadataDetailResponse(metadataService.getMetadataDetail(modelSeq, member.getMemberId()));
     }
 
-    @ApiOperation("메타데이터 작업 삭제하기")
+    @ApiOperation("메타데이터 작업 취소하기")
     @DeleteMapping("/{modelSeq}")
     @ResponseStatus(HttpStatus.OK)
-    public void deleteWorkedMetadata(
+    public void resetWorkedMetadata(
             @MemberInfo AuthenticatedMember member,
             @PathVariable int modelSeq
     ) {
-        metadataService.deleteWorkedMetadata(modelSeq, member.getMemberId());
+        metadataService.resetWorkedMetadata(modelSeq, member.getMemberId());
     }
 
     @ApiOperation("작업한 메타데이터 이미지보기")
@@ -124,13 +123,13 @@ public class MetadataController {
         metadataService.uploadMetadata(member.getMemberId(), metadataRequest.getModelSeq(), metadataRequest.getJson(), images);
     }
 
-    @ApiOperation("메타데이터 삭제하기")
+    @ApiOperation("메타데이터 이미지 삭제하기")
     @DeleteMapping
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void deleteMetadata(
+    public void deleteMetadataImage(
             @Valid @ModelAttribute DeleteMetadataRequest deleteMetadataRequest
-    ) throws IOException {
-        metadataService.deleteMetadata(deleteMetadataRequest);
+    ) {
+        metadataService.deleteMetadataImage(deleteMetadataRequest);
     }
 
     @ApiOperation("상위 카테고리 가져오기")

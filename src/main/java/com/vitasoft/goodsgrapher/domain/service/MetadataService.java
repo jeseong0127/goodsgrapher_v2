@@ -164,10 +164,6 @@ public class MetadataService {
     }
 
     public void cancelReserveMetadata(int modelSeq, String memberId) {
-        List<ModelImage> modelImage = modelImageRepository.findAllByModelSeqAndRegId(modelSeq, memberId);
-        modelImage.forEach(image -> image.setIsDeleted("1"));
-        modelImageRepository.saveAll(modelImage);
-
         Work work = workRepository.findTopByModelSeqAndRegIdOrderByRegDateDesc(modelSeq, memberId);
         work.cancel();
         workRepository.save(work);
@@ -264,16 +260,27 @@ public class MetadataService {
         return groups;
     }
 
-    public void deleteMetadata(DeleteMetadataRequest deleteMetadataRequest) throws IOException {
+    public void deleteMetadataImage(DeleteMetadataRequest deleteMetadataRequest) {
         for (int uploadSeq : deleteMetadataRequest.getUploadSeqList()) {
-            ModelImage modelImage = modelImageRepository.findById(uploadSeq).orElseThrow(ArithmeticException::new);
-            modelImage.setIsDeleted("1");
-
-            FileUtils.forceDelete(new File(modelImagesWorkerPath, modelImage.getFileName()));
+            try {
+                ModelImage modelImage = modelImageRepository.findById(uploadSeq).orElseThrow(ArithmeticException::new);
+                modelImage.setIsDeleted("1");
+                FileUtils.forceDelete(new File(modelImagesWorkerPath, modelImage.getFileName()));
+            } catch (IOException e) {
+                throw new CannotDeleteImageException();
+            }
         }
     }
 
-    public List<File> deleteWorkedMetadata(int modelSeq, String memberId) {
+    public void resetWorkedMetadata(int modelSeq, String memberId) {
+        List<File> deletedFiles = deleteWorkedMetadata(modelSeq, memberId);
+        deleteMetadataImage(deletedFiles);
+
+        Work work = workRepository.findTopByModelSeqAndRegIdOrderByRegDateDesc(modelSeq, memberId);
+        work.cancel();
+    }
+
+    private List<File> deleteWorkedMetadata(int modelSeq, String memberId) {
         ModelInfo modelInfo = modelInfoRepository.findById(modelSeq).orElseThrow(() -> new ModelInfoNotFoundException(modelSeq));
 
         List<ModelImage> modelImages = modelImageRepository.findAllByModelSeqAndRegId(modelInfo.getModelSeq(), memberId);
@@ -283,7 +290,7 @@ public class MetadataService {
         return deletedFiles;
     }
 
-    public void deleteMetadataImage(List<File> insertedFiles, List<File> deletedFiles) {
+    private void deleteMetadataImage(List<File> insertedFiles, List<File> deletedFiles) {
         Set<String> filenames = insertedFiles.stream().map(File::getName).collect(Collectors.toSet());
 
         deletedFiles.stream()
@@ -295,6 +302,16 @@ public class MetadataService {
                         throw new CannotDeleteImageException();
                     }
                 });
+    }
+
+    private void deleteMetadataImage(List<File> deletedFiles) {
+        deletedFiles.forEach(deletedFile -> {
+            try {
+                FileUtils.forceDelete(deletedFile);
+            } catch (IOException e) {
+                throw new CannotDeleteImageException();
+            }
+        });
     }
 
     @Transactional(readOnly = true)

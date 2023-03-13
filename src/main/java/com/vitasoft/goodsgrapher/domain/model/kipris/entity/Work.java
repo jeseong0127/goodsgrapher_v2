@@ -1,5 +1,6 @@
 package com.vitasoft.goodsgrapher.domain.model.kipris.entity;
 
+import java.time.Clock;
 import java.time.LocalDateTime;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -38,7 +39,7 @@ public class Work {
     public Work(String regId, int modelSeq) {
         this.modelSeq = modelSeq;
         this.regId = regId;
-        this.regDate = LocalDateTime.now();
+        this.regDate = LocalDateTime.now(Clock.systemDefaultZone());
     }
 
     public void reserve() {
@@ -47,16 +48,16 @@ public class Work {
 
     public void start() {
         this.status = "2";
-        this.updDate = LocalDateTime.now();
+        this.updDate = LocalDateTime.now(Clock.systemDefaultZone());
     }
 
     public void cancel() {
         this.status = "0";
-        this.updDate = LocalDateTime.now();
+        this.updDate = LocalDateTime.now(Clock.systemDefaultZone());
     }
 
     public void finish() {
         this.status = "3";
-        this.updDate = LocalDateTime.now();
+        this.updDate = LocalDateTime.now(Clock.systemDefaultZone());
     }
 }
